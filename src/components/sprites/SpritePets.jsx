@@ -16,33 +16,22 @@ import styles from './SpritePets.module.css'
 // ─── Config de personajes ─────────────────────────────────────────────────────
 export const CHARACTERS = [
   {
-    id: 'clau-leopard',
-    src: '/sprites/magnific_this-is-a-4x4-spritesheet_l7h9eZkgv9.png',
+    id: 'lorena-beige',
+    src: '/sprites/lorena-beige.png',
     cols: 4, rows: 4,
-    frameW: 480, frameH: 480,
-    border: 43,
+    frameW: 125, frameH: 125,
+    border: 11,
     displaySize: 96,
-    label: '🐆 Clau Leopardo',
-  },
-  // Segundo personaje — pon aquí el nombre exacto del PNG cuando lo tengas
-  // Por ahora apunta al mismo archivo que el tercero que sí está en /public/sprites
-  {
-    id: 'clau-beige',
-    src: '/sprites/magnific_crea-un-spritesheet-como-_WMUBgWtcXe.png',
-    cols: 4, rows: 4,
-    frameW: 256, frameH: 256,
-    border: 22,
-    displaySize: 80,
-    label: '🧢 Clau Beige',
+    label: '🧢 Lorena Beige',
   },
   {
-    id: 'boy',
-    src: '/sprites/magnific_crea-un-spritesheet-como-_VdOtzovMMU.png',
+    id: 'lorena-leopard',
+    src: '/sprites/lorena-leopard.png',
     cols: 4, rows: 4,
-    frameW: 256, frameH: 256,
-    border: 22,
-    displaySize: 80,
-    label: '🕹️ Él',
+    frameW: 125, frameH: 125,
+    border: 11,
+    displaySize: 96,
+    label: '🐆 Lorena Leopardo',
   },
 ]
 
@@ -140,25 +129,26 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
       )
     }
 
-    // Intentar eliminar fondo negro via pixel manipulation
-    // Si falla (CORS tainted canvas), se usa el offAll tal cual
-    // y el CSS mix-blend-mode actúa de fallback
+    // Eliminar fondo oscuro — umbral bajo para no borrar ropa/pelo oscuro
     try {
       const imgData = offCtx.getImageData(0, 0, displaySize, displaySize * total)
       const d = imgData.data
       for (let i = 0; i < d.length; i += 4) {
-        const brightness = (d[i] + d[i+1] + d[i+2]) / 3
-        if (brightness < 40) {
+        const r = d[i], g = d[i+1], b = d[i+2]
+        const brightness = (r + g + b) / 3
+        // Solo eliminar píxeles muy oscuros Y con poca saturación (fondo negro/gris)
+        const max = Math.max(r, g, b)
+        const min = Math.min(r, g, b)
+        const saturation = max === 0 ? 0 : (max - min) / max
+        if (brightness < 15) {
           d[i+3] = 0
-        } else if (brightness < 80) {
-          d[i+3] = Math.round(((brightness - 40) / 40) * 255)
+        } else if (brightness < 25 && saturation < 0.3) {
+          d[i+3] = Math.round((brightness / 25) * 255)
         }
       }
       offCtx.putImageData(imgData, 0, 0)
-      // Marcar canvas como procesado (sin fondo negro)
-      canvas.dataset.processed = 'true'
     } catch(e) {
-      console.warn('[SpritePets] getImageData bloqueado, usando blend-mode fallback:', e.message)
+      console.warn('[SpritePets] getImageData bloqueado:', e.message)
       canvas.style.mixBlendMode = 'screen'
     }
 
