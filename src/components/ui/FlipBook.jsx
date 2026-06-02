@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import * as pdfjsLib from 'pdfjs-dist'
 import styles from './FlipBook.module.css'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
 const SCALE = 1.6
 
