@@ -1,14 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import * as pdfjsLib from 'pdfjs-dist'
 import styles from './Gifts.module.css'
-import FlipBook from '../components/ui/FlipBook'
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString()
 
 const GIFTS = [
   {
@@ -18,38 +11,14 @@ const GIFTS = [
     desc: 'Hecha a mano, solo para ti.',
     accentColor: '#ff10c8',
     shadowColor: '#8a0040',
-    pdf: '/gifts/revista.pdf',
+    coverImg: '/gifts/portada.jpg',
+    driveUrl: 'https://drive.google.com/file/d/1niY2c9xhHGFDYpe72adrMsp4tBQ2Y5T3/preview',
     type: 'magazine',
   },
-  // más regalos aquí
 ]
-
-// ── Carga la portada (página 1) de un PDF ──────────────────────────────────
-function usePdfCover(pdfUrl) {
-  const [cover, setCover] = useState(null)
-  useEffect(() => {
-    let cancelled = false
-    async function load() {
-      try {
-        const pdf = await pdfjsLib.getDocument({ url: new URL(pdfUrl, window.location.href).href }).promise
-        const page = await pdf.getPage(1)
-        const vp = page.getViewport({ scale: 1.4 })
-        const canvas = document.createElement('canvas')
-        canvas.width = vp.width
-        canvas.height = vp.height
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise
-        if (!cancelled) setCover(canvas.toDataURL('image/jpeg', 0.88))
-      } catch (e) { console.warn('cover load error', e) }
-    }
-    load()
-    return () => { cancelled = true }
-  }, [pdfUrl])
-  return cover
-}
 
 // ── Card 3D flotante ────────────────────────────────────────────────────────
 function GiftCard3D({ gift, onOpen }) {
-  const cover = usePdfCover(gift.pdf)
   const ref = useRef(null)
 
   const mouseX = useMotionValue(0)
@@ -90,12 +59,9 @@ function GiftCard3D({ gift, onOpen }) {
       >
         {/* Portada */}
         <div className={styles.cardFace}>
-          {cover
-            ? <img src={cover} alt={gift.title} className={styles.coverImg} draggable={false} />
-            : <div className={styles.coverPlaceholder} style={{ background: gift.accentColor }}>
-                <div className={styles.coverSpinner} />
-              </div>
-          }
+          {gift.coverImg
+            ? <img src={gift.coverImg} alt={gift.title} className={styles.coverImg} draggable={false} />
+            : <div className={styles.coverPlaceholder} style={{ background: gift.accentColor }} />}
 
           {/* Efecto brillo al mover */}
           <motion.div
@@ -178,9 +144,36 @@ export default function Gifts() {
         ))}
       </div>
 
+      {/* Modal visor Drive */}
       <AnimatePresence>
-        {open && <FlipBook pdfUrl={open.pdf} onClose={() => setOpen(null)} />}
+        {open && (
+          <motion.div
+            className={styles.modalOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(null)}
+          >
+            <motion.div
+              className={styles.modalBox}
+              initial={{ scale: 0.92, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.92, y: 30 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              onClick={e => e.stopPropagation()}
+            >
+              <button className={styles.modalClose} onClick={() => setOpen(null)}>✕</button>
+              <iframe
+                src={open.driveUrl}
+                className={styles.driveViewer}
+                allow="autoplay"
+                title={open.title}
+              />
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
+
     </div>
   )
 }
