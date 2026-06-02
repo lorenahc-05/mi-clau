@@ -229,7 +229,34 @@ function CitasBlock({ onPress }) {
     </motion.div>
   )
 }
-
+/* ══════════════════════════════════════════════════════
+   GIFTS BLOCK
+══════════════════════════════════════════════════════ */
+function GiftsBlock({ onPress }) {
+  return (
+    <motion.div
+      className={styles.giftsInner}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <p className={styles.giftsEyebrow}>✦ con todo mi amor ✦</p>
+      <h2 className={styles.giftsTitle}>REGALOS</h2>
+      <p className={styles.giftsDesc}>
+        Todo lo que te he dado,<br />guardado aquí para siempre.
+      </p>
+      <motion.button
+        className={styles.giftsBtn}
+        onClick={onPress}
+        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.04 }}
+      >
+        VER LOS REGALOS →
+      </motion.button>
+    </motion.div>
+  )
+}
 /* ══════════════════════════════════════════════════════
    CONFETI LEOPARDO
 ══════════════════════════════════════════════════════ */
