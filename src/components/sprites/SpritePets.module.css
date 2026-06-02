@@ -72,7 +72,8 @@
   grid-template-columns: 44px 44px 44px;
   grid-template-rows:    44px 44px 44px;
   gap: 3px;
-  z-index: 40;
+  z-index: 200;
+  pointer-events: auto;
 }
 
 @media (hover: hover) {
