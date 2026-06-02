@@ -5,7 +5,9 @@ import styles from './FlipBook.module.css'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
-const SCALE = 1.6
+const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+const SCALE = IS_MOBILE ? 0.8 : 1.6
+const QUALITY = IS_MOBILE ? 0.6 : 0.82
 
 export default function FlipBook({ pdfUrl, onClose }) {
   const [pages, setPages] = useState([])
@@ -24,19 +26,27 @@ export default function FlipBook({ pdfUrl, onClose }) {
     canvas.width = vp.width
     canvas.height = vp.height
     await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise
-    return canvas.toDataURL('image/jpeg', 0.82)
+    return canvas.toDataURL('image/jpeg', QUALITY)
   }, [])
 
   useEffect(() => {
     let cancelled = false
     async function load() {
-      const pdf = await pdfjsLib.getDocument({ url: window.location.origin + pdfUrl }).promise
-      if (cancelled) return
-      setTotal(pdf.numPages)
-      for (let i = 1; i <= pdf.numPages; i++) {
+      try {
+        const pdf = await pdfjsLib.getDocument({ url: window.location.origin + pdfUrl }).promise
         if (cancelled) return
-        const dataUrl = await renderPage(pdf, i)
-        if (!cancelled) setPages(prev => [...prev, dataUrl])
+        setTotal(pdf.numPages)
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) return
+          const dataUrl = await renderPage(pdf, i)
+          if (!cancelled) setPages(prev => [...prev, dataUrl])
+          // Pequeña pausa en móvil para no saturar memoria
+          if (IS_MOBILE && i % 4 === 0) {
+            await new Promise(r => setTimeout(r, 100))
+          }
+        }
+      } catch(e) {
+        console.error('FlipBook load error:', e)
       }
     }
     load()
