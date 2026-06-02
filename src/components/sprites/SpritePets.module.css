@@ -85,6 +85,8 @@
   border: 1.5px solid rgba(255,16,200,0.45);
   color: #f8fff0;
   font-size: 1rem;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
   border-radius: 8px;
   display: flex;
   align-items: center;

@@ -20,7 +20,7 @@ export const CHARACTERS = [
     src: '/sprites/lorena-beige.png',
     cols: 4, rows: 4,
     frameW: 125, frameH: 125,
-    border: 11,
+    border: 13,
     displaySize: 96,
     label: '🧢 Lorena Beige',
   },
@@ -29,7 +29,7 @@ export const CHARACTERS = [
     src: '/sprites/lorena-leopard.png',
     cols: 4, rows: 4,
     frameW: 125, frameH: 125,
-    border: 11,
+    border: 13,
     displaySize: 96,
     label: '🐆 Lorena Leopardo',
   },
@@ -186,8 +186,6 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
       // Dibuja frame
       if (ts - lastTime >= interval) {
         lastTime = ts
-        const col = s.frame % cols
-        const row = Math.floor(s.frame / cols)
 
         ctx.clearRect(0, 0, displaySize, displaySize)
 
@@ -226,10 +224,9 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
 
 // ─── D-pad ────────────────────────────────────────────────────────────────────
 function DPad({ stateMapRef }) {
-  const press = (dir) => {
-    // Buscar el personaje seleccionado en el mapa
-    // El mapa ya tiene referencia al estado activo, el padre pasa el id seleccionado
-    // Usamos el ref directo que nos pasó el padre
+  const handlePress = (dir) => (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     const map = stateMapRef.current
     const selectedEntry = Object.values(map).find(s => s._selected)
     if (!selectedEntry) return
@@ -243,11 +240,11 @@ function DPad({ stateMapRef }) {
 
   return (
     <div className={styles.dpad} aria-label="D-pad táctil">
-      <button className={`${styles.dpadBtn} ${styles.dpadUp}`}    onPointerDown={() => press('up')}    aria-label="Arriba">▲</button>
-      <button className={`${styles.dpadBtn} ${styles.dpadLeft}`}  onPointerDown={() => press('left')}  aria-label="Izquierda">◀</button>
+      <button className={`${styles.dpadBtn} ${styles.dpadUp}`}    onTouchStart={handlePress('up')}    onMouseDown={handlePress('up')}    aria-label="Arriba">▲</button>
+      <button className={`${styles.dpadBtn} ${styles.dpadLeft}`}  onTouchStart={handlePress('left')}  onMouseDown={handlePress('left')}  aria-label="Izquierda">◀</button>
       <div    className={styles.dpadCenter} />
-      <button className={`${styles.dpadBtn} ${styles.dpadRight}`} onPointerDown={() => press('right')} aria-label="Derecha">▶</button>
-      <button className={`${styles.dpadBtn} ${styles.dpadDown}`}  onPointerDown={() => press('down')}  aria-label="Abajo">▼</button>
+      <button className={`${styles.dpadBtn} ${styles.dpadRight}`} onTouchStart={handlePress('right')} onMouseDown={handlePress('right')} aria-label="Derecha">▶</button>
+      <button className={`${styles.dpadBtn} ${styles.dpadDown}`}  onTouchStart={handlePress('down')}  onMouseDown={handlePress('down')}  aria-label="Abajo">▼</button>
     </div>
   )
 }
