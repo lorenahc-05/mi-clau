@@ -3,14 +3,18 @@ import { motion, useMotionValue, useTransform, animate, AnimatePresence } from '
 import styles from './TinderScreen.module.css'
 
 // ─── Config — edita esto con tus datos ───────────────────────────────────────
+const PHOTOS = [
+  '/photos/lorena1.jpeg',
+  '/photos/lorena2.jpeg',
+  // Añade más fotos aquí: '/photos/lorena3.jpeg', etc.
+]
+
 const PROFILE = {
-  name: 'Tu nombre',
+  name: 'Lolelo',
   age: 24,
   distance: '0 km de distancia',
-  bio: '✨ Aquí va tu frase — cámbiame en src/components/tinder/TinderScreen.jsx',
-  // Para cambiar la foto: reemplaza la URL por import de tu imagen
-  // o pon la ruta: '/foto.jpg' (y pon la foto en /public)
-  photo: null, // null = placeholder gradient
+  bio: '✨ pila de amor para dar ✨\nAmante de los gatos, el café y las buenas charlas.\nSwipe right si quieres conocerme 🥰',
+  photo: PHOTOS[Math.floor(Math.random() * PHOTOS.length)],
 }
 
 const SWIPE_THRESHOLD = 100

@@ -60,6 +60,13 @@ export default function Home() {
         <CitasBlock onPress={() => navigate('/citas')} />
       </section>
 
+      {/* ════════════════════════════════
+          SECCIÓN 4 — REGALOS
+      ════════════════════════════════ */}
+      <section className={styles.giftsSection}>
+        <GiftsBlock onPress={() => navigate('/regalos')} />
+      </section>
+
     </div>
   )
 }

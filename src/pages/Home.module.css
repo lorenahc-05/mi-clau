@@ -363,3 +363,69 @@
   pointer-events: auto;
   background: transparent;
 }
+/* ─── SECCIÓN REGALOS ─── */
+.giftsSection {
+  position: relative;
+  min-height: 80dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4rem 1.5rem calc(4rem + var(--safe-bottom));
+  background: var(--black);
+}
+
+.giftsInner {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.2rem;
+  max-width: var(--max-w);
+  width: 100%;
+}
+
+.giftsEyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fucsia);
+}
+
+.giftsTitle {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 34vw, 10rem);
+  line-height: 0.85;
+  color: var(--yellow);
+  letter-spacing: 0.04em;
+  text-shadow: 4px 4px 0 var(--black), 8px 8px 0 rgba(61,36,8,0.4);
+  -webkit-text-stroke: 2px var(--black);
+}
+
+.giftsDesc {
+  font-family: var(--font-italic);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: rgba(248,255,240,0.8);
+  line-height: 1.5;
+}
+
+.giftsBtn {
+  background: var(--fucsia);
+  color: white;
+  padding: 1.1rem 2.5rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  box-shadow: 4px 4px 0 #8a0040, 0 8px 30px rgba(240,20,122,0.4);
+  transition: background 0.15s;
+  border: none;
+  cursor: pointer;
+}
+.giftsBtn:hover { background: #ff2d8a; }
