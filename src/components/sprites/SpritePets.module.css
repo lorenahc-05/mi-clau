@@ -1,0 +1,106 @@
+/* ═══════════════════════════════════════════
+   SPRITE PETS
+═══════════════════════════════════════════ */
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* NO overflow:hidden — los canvas tienen position:absolute y necesitan ser visibles */
+}
+
+/* Cada canvas es un personaje flotante */
+.pet {
+  position: absolute;
+  cursor: pointer;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transition: outline 0.1s;
+}
+
+.pet:hover {
+  filter: drop-shadow(0 0 8px #ff10c8) brightness(1.15);
+}
+
+/* Personaje seleccionado */
+.petSelected {
+  filter: drop-shadow(0 0 12px #ff10c8) drop-shadow(0 0 24px rgba(255,16,200,0.5));
+  outline: 2px dashed #ff10c8;
+  outline-offset: 3px;
+  animation: selectedPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes selectedPulse {
+  0%, 100% { outline-opacity: 1; }
+  50%       { outline-opacity: 0.3; }
+}
+
+/* Hint teclas — solo desktop */
+.selectedHint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17,17,17,0.85);
+  backdrop-filter: blur(8px);
+  color: #f8fff0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,16,200,0.3);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 30;
+}
+
+@media (hover: none) {
+  .selectedHint { display: none; }
+}
+
+/* ─── D-PAD ─── */
+.dpad {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: grid;
+  grid-template-areas:
+    ".    up   ."
+    "left mid  right"
+    ".    down .";
+  grid-template-columns: 44px 44px 44px;
+  grid-template-rows:    44px 44px 44px;
+  gap: 3px;
+  z-index: 40;
+}
+
+@media (hover: hover) {
+  .dpad { display: none; }
+}
+
+.dpadBtn {
+  background: rgba(17,17,17,0.8);
+  backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(255,16,200,0.45);
+  color: #f8fff0;
+  font-size: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.1s;
+}
+
+.dpadBtn:active {
+  background: rgba(255,16,200,0.35);
+}
+
+.dpadUp    { grid-area: up;    }
+.dpadLeft  { grid-area: left;  }
+.dpadCenter { grid-area: mid; background: rgba(17,17,17,0.4); border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.08); }
+.dpadRight { grid-area: right; }
+.dpadDown  { grid-area: down;  }

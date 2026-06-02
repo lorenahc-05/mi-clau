@@ -346,3 +346,20 @@
   transition: background 0.15s;
 }
 .citasBtn:hover { background: #ff2d8a; }
+
+/* ─── MONIGOTES LAYER ─── */
+.spritesLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;   /* por encima de todo */
+  pointer-events: none;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: visible;
+  background: transparent;
+}
+
+.spritesLayer canvas {
+  pointer-events: auto;
+  background: transparent;
+}

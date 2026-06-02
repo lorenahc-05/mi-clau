@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'
+import SpritePets from '../components/sprites/SpritePets'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -33,6 +34,11 @@ export default function Home() {
 
   return (
     <div className={styles.page} ref={pageRef}>
+
+      {/* ════════════════════════════════
+          MONIGOTES — capa flotante sobre toda la página
+      ════════════════════════════════ */}
+      <SpritePets className={styles.spritesLayer} />
 
       {/* ════════════════════════════════
           SECCIÓN 1 — HERO
