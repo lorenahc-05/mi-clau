@@ -193,3 +193,11 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+/* ── VISOR MÓVIL (iframe directo) ── */
+.mobileViewer {
+  width: 100%;
+  height: 85dvh;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+}

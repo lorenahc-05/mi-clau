@@ -85,6 +85,21 @@ function goPrev() {
   }, 550)
 }
 
+  if (IS_MOBILE) {
+    return (
+      <div className={styles.overlay} onClick={onClose}>
+        <div className={styles.wrapper} onClick={e => e.stopPropagation()}>
+          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <iframe
+            src={pdfUrl}
+            className={styles.mobileViewer}
+            title="Revista"
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.wrapper} onClick={e => e.stopPropagation()}>
