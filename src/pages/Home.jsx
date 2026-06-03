@@ -125,6 +125,64 @@ function HeroSection() {
 }
 
 /* ══════════════════════════════════════════════════════
+   FONDO BESO — patrón diagonal con pulse
+══════════════════════════════════════════════════════ */
+function KissBg() {
+  const WORD = 'CHIKICHIKI'
+  const ROWS = 16
+  const ITEMS_PER_ROW = 7
+
+  return (
+    <div className={styles.kissBg}>
+      {Array.from({ length: ROWS }).map((_, rowIdx) => (
+        <div
+          key={rowIdx}
+          className={styles.kissBgRow}
+          style={{
+            top: `${(rowIdx / ROWS) * 110 - 5}%`,
+            transform: `rotate(-20deg) translateX(${rowIdx % 2 === 0 ? '-20px' : '20px'})`,
+          }}
+        >
+          {Array.from({ length: ITEMS_PER_ROW }).map((_, i) => (
+            <span key={i} style={{ display: 'contents' }}>
+              {/* Labios — pulse en segundos impares */}
+              <motion.img
+                src="/photos/besico.png"
+                className={styles.kissBgLip}
+                alt=""
+                draggable={false}
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{
+                  duration: 0.4,
+                  repeat: Infinity,
+                  repeatDelay: 1.6,
+                  delay: (rowIdx * 0.3 + i * 0.15) % 2,
+                  ease: 'easeInOut',
+                }}
+              />
+              {/* Palabra — pulse en segundos pares */}
+              <motion.span
+                className={styles.kissBgWord}
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{
+                  duration: 0.4,
+                  repeat: Infinity,
+                  repeatDelay: 1.6,
+                  delay: ((rowIdx * 0.3 + i * 0.15) % 2) + 1,
+                  ease: 'easeInOut',
+                }}
+              >
+                {WORD}
+              </motion.span>
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════
    BESO EN SCROLL — scroll hijacking cuando está en pantalla
 ══════════════════════════════════════════════════════ */
 function KissScroll() {
@@ -133,13 +191,14 @@ function KissScroll() {
   const isActive   = useRef(false)
   const progRef    = useRef(0)
 
-  const xLeft       = useTransform(progress, [0, 1], ['-55vw', '0vw'])
+  const xLeft       = useTransform(progress, [0, 1], ['-55vw', '8vw'])
   const rotateLeft  = useTransform(progress, [0, 1], [-6, 0])
-  const xRight         = useTransform(progress, [0, 1], ['55vw', '-14vw'])
+  const xRight         = useTransform(progress, [0, 1], ['55vw', '-6vw'])
   const rotateRight    = useTransform(progress, [0, 1], [6, 0])
   const translateRight = useTransform(progress, [0, 1], [0, -10])
   const scaleRight     = useTransform(progress, [0, 1], [1, 0.78])
   const labelOpacity = useTransform(progress, [0.85, 1], [0, 1])
+  const bgOpacity    = useTransform(progress, [0.82, 1], [0, 1])
   const hintOpacity  = useTransform(progress, [0, 0.25], [1, 0])
 
   useEffect(() => {
@@ -246,6 +305,11 @@ function KissScroll() {
           style={{ rotate: rotateRight, x: xRight, y: translateRight, scale: scaleRight }}
         >
           <img src="/photos/beso_der.png" alt="" draggable={false} />
+        </motion.div>
+
+        {/* Fondo rosa con labios cuando se besan */}
+        <motion.div style={{ opacity: bgOpacity, position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+          <KissBg />
         </motion.div>
 
         <motion.div className={styles.kissHeart} style={{ opacity: labelOpacity }}>

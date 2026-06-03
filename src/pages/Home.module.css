@@ -193,7 +193,44 @@
   display: none;
 }
 
-/* ── Zanahoria hint ── */
+/* ── Fondo beso ── */
+.kissBg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #ffb3c6;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.kissBgRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  position: absolute;
+  left: -10%;
+  width: 120%;
+}
+
+.kissBgLip {
+  width: 22px;
+  height: auto;
+  flex-shrink: 0;
+  mix-blend-mode: multiply;
+  transform-origin: center;
+}
+
+.kissBgWord {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #cc0033;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  transform-origin: center;
+  text-transform: uppercase;
+}
 .carrotHint {
   position: absolute;
   top: 50%;
@@ -233,7 +270,7 @@
   position: relative;
   z-index: 2;
   clip-path: inset(0 0 25% 0);
-  margin-bottom: -22px;
+  margin-bottom: -26px;
 }
 
 .carrotSoil {
@@ -253,6 +290,7 @@
   flex-shrink: 0;
   transform-origin: center center;
   will-change: transform;
+  z-index: 2;
 }
 .kissFigLeft  {}
 .kissFigRight {}
