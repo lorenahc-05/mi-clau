@@ -53,19 +53,37 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════
-          SECCIÓN 3 — CITAS
+          BANNER
       ════════════════════════════════ */}
-      <section className={styles.citasSection} ref={citasRef}>
-        {confettiFired && <LeopardConfetti />}
-        <CitasBlock onPress={() => navigate('/citas')} />
-      </section>
+      <div className={styles.marqueeWrap}>
+        <div className={styles.marqueeTrack}>
+          {[...Array(3)].map((_, i) => (
+            <span key={i} className={styles.marqueeContent}>
+              {'✦ POPOPO ✦ TKM ✦ POPOPO ✦ TKM ✦ POPOPO ✦ TKM ✦ POPOPO ✦ TKM \u00A0'}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ════════════════════════════════
-          SECCIÓN 4 — REGALOS
+          CARDS — citas y regalos
       ════════════════════════════════ */}
-      <section className={styles.giftsSection}>
-        <GiftsBlock onPress={() => navigate('/regalos')} />
-      </section>
+      <div className={styles.cardsStack}>
+
+        <div className={styles.sectionCard}>
+          <section className={styles.citasSection} ref={citasRef}>
+            {confettiFired && <LeopardConfetti />}
+            <CitasBlock onPress={() => navigate('/citas')} />
+          </section>
+        </div>
+
+        <div className={styles.sectionCard}>
+          <section className={styles.giftsSection}>
+            <GiftsBlock onPress={() => navigate('/regalos')} />
+          </section>
+        </div>
+
+      </div>
 
     </div>
   )
