@@ -422,13 +422,19 @@
 /* ─── SECCIÓN REGALOS ─── */
 .giftsSection {
   position: relative;
-  min-height: 80dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   padding: 4rem 1.5rem calc(4rem + var(--safe-bottom));
-  background: var(--black);
+  background-color: #f5f8ff;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0px,
+    transparent 18px,
+    rgba(30,64,255,0.18) 18px,
+    rgba(30,64,255,0.18) 40px
+  );
 }
 
 .giftsInner {
@@ -438,50 +444,57 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1.2rem;
+  gap: 1rem;
   max-width: var(--max-w);
   width: 100%;
 }
 
 .giftsEyebrow {
   font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.25em;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--fucsia);
+  color: #1e40ff;
+  opacity: 0.6;
 }
 
 .giftsTitle {
   font-family: var(--font-display);
-  font-size: clamp(6rem, 34vw, 10rem);
-  line-height: 0.85;
-  color: var(--yellow);
-  letter-spacing: 0.04em;
-  text-shadow: 4px 4px 0 var(--black), 8px 8px 0 rgba(61,36,8,0.4);
-  -webkit-text-stroke: 2px var(--black);
+  font-size: clamp(3.5rem, 18vw, 6rem);
+  line-height: 0.88;
+  letter-spacing: 0.01em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.04em;
+}
+
+.giftsTitleLetter {
+  display: inline-block;
+  -webkit-text-stroke: 1.5px rgba(0,0,0,0.1);
 }
 
 .giftsDesc {
-  font-family: var(--font-italic);
-  font-size: 1.05rem;
-  font-style: italic;
-  color: rgba(248,255,240,0.8);
-  line-height: 1.5;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(17,17,17,0.65);
+  line-height: 1.6;
+  max-width: 280px;
 }
 
 .giftsBtn {
-  background: var(--fucsia);
+  background: #ff5500;
   color: white;
-  padding: 1.1rem 2.5rem;
+  padding: 0.9rem 2rem;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1rem;
   letter-spacing: 0.1em;
-  border-radius: 4px;
-  margin-top: 0.5rem;
-  box-shadow: 4px 4px 0 #8a0040, 0 8px 30px rgba(240,20,122,0.4);
+  border-radius: 2px;
+  margin-top: 0.4rem;
+  box-shadow: 3px 3px 0 rgba(200,60,0,0.3);
   transition: background 0.15s;
   border: none;
   cursor: pointer;
 }
-.giftsBtn:hover { background: #ff2d8a; }
+.giftsBtn:hover { background: #e04a00; }

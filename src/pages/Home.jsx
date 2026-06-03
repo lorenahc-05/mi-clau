@@ -359,6 +359,7 @@ function CitasBlock({ onPress }) {
    GIFTS BLOCK
 ══════════════════════════════════════════════════════ */
 function GiftsBlock({ onPress }) {
+  const oranges = ['#ff8c00','#ff6a00','#ff5500','#ff4400','#ff6a00','#ff8c00','#ff5500']
   return (
     <motion.div
       className={styles.giftsInner}
@@ -368,7 +369,19 @@ function GiftsBlock({ onPress }) {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
       <p className={styles.giftsEyebrow}>✦ con todo mi amor ✦</p>
-      <h2 className={styles.giftsTitle}>REGALOS</h2>
+      <h2 className={styles.giftsTitle}>
+        {['R','E','G','A','L','O','S'].map((l, i) => (
+          <motion.span
+            key={i}
+            className={styles.giftsTitleLetter}
+            style={{ color: oranges[i] }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
+          >
+            {l}
+          </motion.span>
+        ))}
+      </h2>
       <p className={styles.giftsDesc}>
         Todo lo que te he dado,<br />guardado aquí para siempre.
       </p>
@@ -376,7 +389,7 @@ function GiftsBlock({ onPress }) {
         className={styles.giftsBtn}
         onClick={onPress}
         whileTap={{ scale: 0.95 }}
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.03 }}
       >
         VER LOS REGALOS →
       </motion.button>

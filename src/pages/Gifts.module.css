@@ -3,52 +3,11 @@
   min-height: 100dvh;
   overflow-x: hidden;
   padding-bottom: calc(4rem + var(--safe-bottom));
+  background: #f5f8ff;
 }
 
-.leopardBg {
-  position: fixed;
-  inset: 0;
-  background-color: #e8f5d0;
-  background-image:
-    radial-gradient(ellipse 9px 7px at  7%  4%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 6px 9px at 12%  8%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 8px 5px at  4% 14%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 26%  3%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 6px 10px at 31%  9%, #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 6px at 48%  5%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 10px at 54% 10%, #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 70%  4%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 6px 9px at 76%  9%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at 90%  3%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 10px at 96%  8%, #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at 14% 24%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 6px 9px at 19% 30%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 10px 6px at 37% 22%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 10px at 43% 28%, #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at 59% 23%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 6px 9px at 65% 29%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 80% 22%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 10px at 86% 28%, #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 6px at  5% 44%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 9px at 11% 50%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 28% 43%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at 50% 44%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 82% 62%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 7px 9px at 88% 68%,  #1a1050 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at  8% 82%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 10px 6px at 30% 81%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 9px 7px at 52% 82%,  #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 10px 7px at 74% 81%, #2a1a6e 100%, transparent 0),
-    radial-gradient(ellipse 9px 6px at 93% 82%,  #2a1a6e 100%, transparent 0);
-  z-index: 0;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(232, 245, 208, 0.08);
-  z-index: 1;
-}
+.leopardBg { display: none; }
+.overlay { display: none; }
 
 /* ── HEADER ── */
 .header {
