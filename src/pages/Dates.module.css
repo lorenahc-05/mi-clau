@@ -359,3 +359,75 @@
 }
 .modalConfirm:disabled { opacity: 0.4; cursor: default; }
 .modalConfirm:not(:disabled):hover { filter: brightness(1.1); }
+/* ── Días sorpresa en el calendario ── */
+.calDaySurprise {
+  background: #7b4f8c !important;
+  color: white !important;
+  font-weight: 700;
+}
+.calDaySurprise:hover { background: #9b6fac !important; }
+
+/* ── Modal nuevos estilos ── */
+.modalRow {
+  display: flex;
+  gap: 0.6rem;
+}
+.modalRow .modalInput { flex: 1; }
+
+.modalToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+}
+
+.modalToggleLabel {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(58,32,16,0.7);
+  letter-spacing: 0.05em;
+}
+
+.modalToggle {
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  background: rgba(200,75,47,0.08);
+  color: rgba(58,32,16,0.5);
+  border: 1.5px solid rgba(200,75,47,0.2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modalToggleOn {
+  background: #c84b2f;
+  color: white;
+  border-color: #c84b2f;
+}
+
+.modalPollWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: rgba(200,75,47,0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(200,75,47,0.15);
+}
+
+/* ── Filas sorpresa ── */
+.rowSurprise { background: rgba(245,235,255,0.7) !important; }
+.rowSurprise:hover { background: rgba(240,225,255,0.9) !important; }
+.rowTitleSurprise { color: #7b4f8c !important; }
+.rowBadgeSurprise {
+  background: rgba(123,79,140,0.1) !important;
+  color: #7b4f8c !important;
+  border-color: rgba(123,79,140,0.3) !important;
+}
+.rowTime {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: #c84b2f;
+  letter-spacing: 0.1em;
+}

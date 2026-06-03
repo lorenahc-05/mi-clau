@@ -5,6 +5,7 @@ import TinderScreen from './components/tinder/TinderScreen'
 import Home from './pages/Home'
 import Dates from './pages/Dates'
 import DateDetail from './pages/DateDetail'
+import CitaCustomPage from './pages/CitaCustomPage'
 import Gifts from './pages/Gifts'
 
 // ── Animated route wrapper ────────────────────────────────────────────────────
@@ -29,6 +30,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/citas" element={<PageTransition><Dates /></PageTransition>} />
         <Route path="/citas/:id" element={<PageTransition><DateDetail /></PageTransition>} />
+        <Route path="/citas/custom/:id" element={<PageTransition><CitaCustomPage /></PageTransition>} />
         <Route path="/regalos" element={<PageTransition><Gifts /></PageTransition>} />
       </Routes>
     </AnimatePresence>
