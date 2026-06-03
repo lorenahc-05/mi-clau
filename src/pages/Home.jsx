@@ -267,15 +267,15 @@ function KissScroll() {
       }
     }
 
-    window.addEventListener('wheel',      onWheel,      { passive: false })
-    window.addEventListener('touchstart', onTouchStart, { passive: true  })
-    window.addEventListener('touchmove',  onTouchMove,  { passive: false })
+    window.addEventListener('wheel', onWheel, { passive: false })
+    section.addEventListener('touchstart', onTouchStart, { passive: true  })
+    section.addEventListener('touchmove',  onTouchMove,  { passive: false })
 
     return () => {
       observer.disconnect()
       window.removeEventListener('wheel',      onWheel)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchmove',  onTouchMove)
+      section.removeEventListener('touchstart', onTouchStart)
+      section.removeEventListener('touchmove',  onTouchMove)
     }
   }, [progress])
 
