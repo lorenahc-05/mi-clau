@@ -208,9 +208,12 @@ function KissScroll() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         isActive.current = entry.isIntersecting
-        // Reset al entrar para que siempre empiece desde el principio
-        if (entry.isIntersecting && progRef.current === 0) {
-          progress.set(0)
+        if (!entry.isIntersecting) {
+          // Si salimos por arriba, resetear a 0
+          if (entry.boundingClientRect.top > 0) {
+            progRef.current = 0
+            progress.set(0)
+          }
         }
       },
       { threshold: 0.30 }
@@ -238,7 +241,10 @@ function KissScroll() {
     }
 
     let touchStartY = 0
-    const onTouchStart = (e) => { touchStartY = e.touches[0].clientY }
+    const onTouchStart = (e) => {
+      if (!isActive.current) return
+      touchStartY = e.touches[0].clientY
+    }
     const onTouchMove  = (e) => {
       if (!isActive.current) return
       const dy = touchStartY - e.touches[0].clientY
