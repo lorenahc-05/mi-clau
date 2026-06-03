@@ -171,7 +171,7 @@
 
 /* ─── BESO EN SCROLL ─── */
 .kissSection {
-  height: 140vh;
+  height: 100vh;
   background: var(--black);
   position: relative;
 }
@@ -183,7 +183,7 @@
   top: 0;
   height: 100dvh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   background: var(--black);
@@ -205,19 +205,26 @@
 }
 
 .kissFig {
-  position: absolute;
-  bottom: 0;
-  width: clamp(140px, 42vw, 230px);
-  transform-origin: bottom center;
+  position: relative;
+  width: clamp(160px, 45vw, 320px);
+  flex-shrink: 0;
+  transform-origin: center center;
   will-change: transform;
 }
-.kissFigLeft  { left: 0; }
-.kissFigRight { right: 0; }
-.kissFig img  { width: 100%; height: auto; pointer-events: none; user-select: none; display: block; }
+.kissFigLeft  {}
+.kissFigRight {}
+.kissFig img  {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: lighten;
+}
 
 .kissHeart {
   position: absolute;
-  top: 28%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
   font-size: clamp(3rem, 18vw, 6rem);

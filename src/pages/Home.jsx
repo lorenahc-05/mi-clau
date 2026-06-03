@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'
 import SpritePets from '../components/sprites/SpritePets'
@@ -18,7 +18,7 @@ export default function Home() {
   // ── Sección beso: scroll local ──
   const { scrollYProgress: kissProgress } = useScroll({
     target: kissRef,
-    offset: ['start 0.8', 'end 0.2'],
+    offset: ['start center', 'end center'],
   })
 
   // ── Disparar confeti cuando citasRef entra en viewport ──
@@ -49,7 +49,7 @@ export default function Home() {
           SECCIÓN 2 — BESO EN SCROLL
       ════════════════════════════════ */}
       <section className={styles.kissSection} ref={kissRef}>
-        <KissScroll progress={kissProgress} />
+        <KissScroll />
       </section>
 
       {/* ════════════════════════════════
@@ -125,55 +125,116 @@ function HeroSection() {
 }
 
 /* ══════════════════════════════════════════════════════
-   BESO EN SCROLL — dos figuras que se inclinan y besan
+   BESO EN SCROLL — scroll hijacking cuando está en pantalla
 ══════════════════════════════════════════════════════ */
-function KissScroll({ progress }) {
-  // Figura izquierda: rota de -15° a +12° (se inclina hacia la derecha/beso)
-  const rotateLeft  = useTransform(progress, [0.0, 0.5], [-18, 14])
-  const xLeft       = useTransform(progress, [0.0, 0.5], ['-4vw', '14vw'])
-  const scaleLeft   = useTransform(progress, [0.0, 0.5], [0.9, 1.05])
+function KissScroll() {
+  const sectionRef = useRef(null)
+  const progress   = useMotionValue(0)
+  const isActive   = useRef(false)
+  const progRef    = useRef(0)
 
-  // Figura derecha
-  const rotateRight = useTransform(progress, [0.0, 0.5], [18, -14])
-  const xRight      = useTransform(progress, [0.0, 0.5], ['4vw', '-14vw'])
-  const scaleRight  = useTransform(progress, [0.0, 0.5], [0.9, 1.05])
+  const xLeft       = useTransform(progress, [0, 1], ['-55vw', '0vw'])
+  const rotateLeft  = useTransform(progress, [0, 1], [-6, 0])
+  const xRight         = useTransform(progress, [0, 1], ['55vw', '-14vw'])
+  const rotateRight    = useTransform(progress, [0, 1], [6, 0])
+  const translateRight = useTransform(progress, [0, 1], [0, -10])
+  const scaleRight     = useTransform(progress, [0, 1], [1, 0.78])
+  const labelOpacity = useTransform(progress, [0.85, 1], [0, 1])
 
-  // Label que aparece en el beso
-  const labelOpacity = useTransform(progress, [0.4, 0.55], [0, 1])
-  const labelScale   = useTransform(progress, [0.4, 0.55], [0.7, 1])
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isActive.current = entry.isIntersecting
+        // Reset al entrar para que siempre empiece desde el principio
+        if (entry.isIntersecting && progRef.current === 0) {
+          progress.set(0)
+        }
+      },
+      { threshold: 0.30 }
+    )
+    observer.observe(section)
+
+    const onWheel = (e) => {
+      if (!isActive.current) return
+      const p = progRef.current
+      // Bloquear siempre si progress está entre 0 y 1
+      if (e.deltaY > 0 && p < 1) {
+        e.preventDefault()
+        e.stopPropagation()
+        progRef.current = Math.min(1, p + e.deltaY * 0.004)
+        progress.set(progRef.current)
+        return
+      }
+      if (e.deltaY < 0 && p > 0) {
+        e.preventDefault()
+        e.stopPropagation()
+        progRef.current = Math.max(0, p + e.deltaY * 0.004)
+        progress.set(progRef.current)
+        return
+      }
+    }
+
+    let touchStartY = 0
+    const onTouchStart = (e) => { touchStartY = e.touches[0].clientY }
+    const onTouchMove  = (e) => {
+      if (!isActive.current) return
+      const dy = touchStartY - e.touches[0].clientY
+      const p  = progRef.current
+      if (dy > 0 && p < 1) {
+        e.preventDefault()
+        e.stopPropagation()
+        progRef.current = Math.min(1, p + Math.abs(dy) * 0.006)
+        progress.set(progRef.current)
+        touchStartY = e.touches[0].clientY
+        return
+      }
+      if (dy < 0 && p > 0) {
+        e.preventDefault()
+        e.stopPropagation()
+        progRef.current = Math.max(0, p - Math.abs(dy) * 0.006)
+        progress.set(progRef.current)
+        touchStartY = e.touches[0].clientY
+        return
+      }
+    }
+
+    window.addEventListener('wheel',      onWheel,      { passive: false })
+    window.addEventListener('touchstart', onTouchStart, { passive: true  })
+    window.addEventListener('touchmove',  onTouchMove,  { passive: false })
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('wheel',      onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove',  onTouchMove)
+    }
+  }, [progress])
 
   return (
-    <div className={styles.kissWrap}>
-      {/* Sticky container */}
+    <div ref={sectionRef} className={styles.kissWrap}>
       <div className={styles.kissSticky}>
-
-        {/* Texto de fondo */}
         <p className={styles.kissLabel}>haz scroll</p>
 
-        {/* Figura izquierda */}
         <motion.div
           className={`${styles.kissFig} ${styles.kissFigLeft}`}
-          style={{ rotate: rotateLeft, x: xLeft, scale: scaleLeft }}
+          style={{ rotate: rotateLeft, x: xLeft }}
         >
-          <img src="/photos/girl1.png" alt="" draggable={false} />
+          <img src="/photos/beso_izq.png" alt="" draggable={false} />
         </motion.div>
 
-        {/* Figura derecha */}
         <motion.div
           className={`${styles.kissFig} ${styles.kissFigRight}`}
-          style={{ rotate: rotateRight, x: xRight, scale: scaleRight }}
+          style={{ rotate: rotateRight, x: xRight, y: translateRight, scale: scaleRight }}
         >
-          <img src="/photos/girl2.png" alt="" draggable={false} />
+          <img src="/photos/beso_der.png" alt="" draggable={false} />
         </motion.div>
 
-        {/* ❤ que aparece cuando se "besan" */}
-        <motion.div
-          className={styles.kissHeart}
-          style={{ opacity: labelOpacity, scale: labelScale }}
-        >
+        <motion.div className={styles.kissHeart} style={{ opacity: labelOpacity }}>
           ♥
         </motion.div>
-
       </div>
     </div>
   )
