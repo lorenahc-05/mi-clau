@@ -82,25 +82,6 @@ function HeroSection() {
       <div className={styles.leopardBg} aria-hidden />
       <div className={styles.heroOverlay} aria-hidden />
 
-      {/* Fotos laterales */}
-      <motion.div
-        className={`${styles.heroPhoto} ${styles.heroPhotoLeft}`}
-        initial={{ x: -80, opacity: 0, rotate: -8 }}
-        animate={{ x: 0, opacity: 1, rotate: -6 }}
-        transition={{ duration: 1.1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <img src="/photos/girl1.png" alt="placeholder 1" draggable={false} />
-      </motion.div>
-
-      <motion.div
-        className={`${styles.heroPhoto} ${styles.heroPhotoRight}`}
-        initial={{ x: 80, opacity: 0, rotate: 8 }}
-        animate={{ x: 0, opacity: 1, rotate: 6 }}
-        transition={{ duration: 1.1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <img src="/photos/girl2.png" alt="placeholder 2" draggable={false} />
-      </motion.div>
-
       {/* Título central */}
       <div className={styles.heroCenter}>
         <motion.p

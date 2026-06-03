@@ -139,10 +139,14 @@ export default function TinderScreen({ onMatch }) {
             {/* Action buttons */}
             <div className={styles.buttons}>
               <button className={`${styles.btn} ${styles.btnNope}`} onClick={handleNopeBtn} aria-label="Nope">
-                <span>✕</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff4458" strokeWidth="2.5" strokeLinecap="round" width="24" height="24">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
               </button>
               <button className={`${styles.btn} ${styles.btnLike}`} onClick={handleLikeBtn} aria-label="Like">
-                <span>♥</span>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
               </button>
             </div>
           </motion.div>
@@ -188,35 +192,58 @@ function MatchScreen() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      {/* Corazones SVG animados */}
       <motion.div
         className={styles.matchBurst}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ scale: 0, rotate: -15 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
-        💕
+        <svg viewBox="0 0 120 100" className={styles.matchHeartSvg} aria-hidden>
+          {/* corazón grande */}
+          <motion.path
+            d="M60 85 C40 70 10 52 10 30 C10 17 20 7 33 7 C43 7 52 13 60 22 C68 13 77 7 87 7 C100 7 110 17 110 30 C110 52 80 70 60 85Z"
+            fill="#ff2d78"
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.15, 1] }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ transformOrigin: '60px 50px' }}
+          />
+          {/* brillo */}
+          <ellipse cx="42" cy="22" rx="8" ry="5" fill="rgba(255,255,255,0.3)" transform="rotate(-30 42 22)"/>
+        </svg>
+        {/* corazón pequeño flotando */}
+        <motion.div
+          className={styles.matchHeartSmall}
+          initial={{ opacity: 0, y: 10, x: -10 }}
+          animate={{ opacity: 1, y: -8, x: 14 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <svg viewBox="0 0 60 52" fill="#ff6fa8" aria-hidden>
+            <path d="M30 44 C20 35 5 26 5 15 C5 8 10 3 17 3 C22 3 27 6 30 11 C33 6 38 3 43 3 C50 3 55 8 55 15 C55 26 40 35 30 44Z"/>
+          </svg>
+        </motion.div>
       </motion.div>
 
       <motion.div
         className={styles.matchTitle}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <span className={styles.matchIs}>Es un</span>
-        <span className={styles.matchWord}>Match!</span>
+        <span className={styles.matchIs}>ES UN</span>
+        <span className={styles.matchWord}>MATCH!</span>
       </motion.div>
 
       <motion.p
         className={styles.matchSub}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
+        transition={{ duration: 0.5, delay: 0.75 }}
       >
-        Sabía que dirías que sí 🥰
+        Sabía que dirías que sí
       </motion.p>
 
-      {/* Confetti hearts */}
       <Hearts />
     </motion.div>
   )
@@ -231,7 +258,6 @@ function NopedScreen({ onRetry }) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Breaking heart */}
       <motion.div
         className={styles.brokenHeart}
         initial={{ scale: 0, rotate: -10 }}
@@ -266,7 +292,7 @@ function NopedScreen({ onRetry }) {
         transition={{ delay: 0.8 }}
         whileTap={{ scale: 0.95 }}
       >
-        Volver a pensarlo 💭
+        Volver a pensarlo
       </motion.button>
     </motion.div>
   )
