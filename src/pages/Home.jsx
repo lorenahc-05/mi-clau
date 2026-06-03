@@ -378,40 +378,99 @@ function CitasBlock({ onPress }) {
 ══════════════════════════════════════════════════════ */
 function GiftsBlock({ onPress }) {
   const oranges = ['#ff8c00','#ff6a00','#ff5500','#ff4400','#ff6a00','#ff8c00','#ff5500']
+  const letters = ['R','E','G','A','L','O','S']
+  const cardRef  = useRef(null)
+  const stateRef = useRef(null)
+  const rafRef   = useRef(null)
+  const [positions, setPositions] = useState([])
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card) return
+
+    const W = card.offsetWidth
+    const H = card.offsetHeight
+    const SIZE = Math.min(W, H) * 0.18
+
+    // Inicializar posición y velocidad de cada letra
+    stateRef.current = letters.map((_, i) => ({
+      x: Math.random() * (W - SIZE),
+      y: Math.random() * (H - SIZE),
+      vx: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random() * 2),
+      vy: (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random() * 2),
+      size: SIZE,
+    }))
+
+    function loop() {
+      const s = stateRef.current
+      const cW = card.offsetWidth
+      const cH = card.offsetHeight
+
+      s.forEach(p => {
+        p.x += p.vx
+        p.y += p.vy
+        if (p.x <= 0)          { p.x = 0;          p.vx = Math.abs(p.vx) }
+        if (p.x >= cW - p.size) { p.x = cW - p.size; p.vx = -Math.abs(p.vx) }
+        if (p.y <= 0)          { p.y = 0;          p.vy = Math.abs(p.vy) }
+        if (p.y >= cH - p.size) { p.y = cH - p.size; p.vy = -Math.abs(p.vy) }
+      })
+
+      setPositions(s.map(p => ({ x: p.x, y: p.y, size: p.size })))
+      rafRef.current = requestAnimationFrame(loop)
+    }
+
+    rafRef.current = requestAnimationFrame(loop)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+
   return (
-    <motion.div
-      className={styles.giftsInner}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <p className={styles.giftsEyebrow}>✦ con todo mi amor ✦</p>
-      <h2 className={styles.giftsTitle}>
-        {['R','E','G','A','L','O','S'].map((l, i) => (
-          <motion.span
-            key={i}
-            className={styles.giftsTitleLetter}
-            style={{ color: oranges[i] }}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
-          >
-            {l}
-          </motion.span>
-        ))}
-      </h2>
-      <p className={styles.giftsDesc}>
-        Todo lo que te he dado,<br />guardado aquí para siempre.
-      </p>
-      <motion.button
-        className={styles.giftsBtn}
-        onClick={onPress}
-        whileTap={{ scale: 0.95 }}
-        whileHover={{ scale: 1.03 }}
-      >
-        VER LOS REGALOS →
-      </motion.button>
-    </motion.div>
+    <div ref={cardRef} className={styles.giftsInner} style={{ position: 'relative', minHeight: '320px', overflow: 'hidden' }}>
+
+      {/* Letras rebotando */}
+      {positions.map((pos, i) => (
+        <span
+          key={i}
+          style={{
+            position: 'absolute',
+            left: pos.x,
+            top: pos.y,
+            fontSize: pos.size,
+            color: oranges[i],
+            fontFamily: 'var(--font-display)',
+            lineHeight: 1,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            WebkitTextStroke: '1.5px rgba(0,0,0,0.1)',
+            opacity: 0.25,
+            zIndex: 1,
+          }}
+        >
+          {letters[i]}
+        </span>
+      ))}
+
+      {/* Contenido encima */}
+      <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', paddingTop: '1rem' }}>
+        <p className={styles.giftsEyebrow}>✦ con todo mi amor ✦</p>
+        <h2 className={styles.giftsTitle}>
+          {letters.map((l, i) => (
+            <span key={i} className={styles.giftsTitleLetter} style={{ color: oranges[i] }}>{l}</span>
+          ))}
+        </h2>
+        <p className={styles.giftsDesc}>
+          Todo lo que te he dado,<br />guardado aquí para siempre.
+        </p>
+        <motion.button
+          className={styles.giftsBtn}
+          onClick={onPress}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.03 }}
+        >
+          VER LOS REGALOS →
+        </motion.button>
+      </div>
+
+    </div>
   )
 }
 /* ══════════════════════════════════════════════════════
