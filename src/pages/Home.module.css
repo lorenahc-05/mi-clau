@@ -185,23 +185,66 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   background: var(--black);
 }
 
 .kissLabel {
+  display: none;
+}
+
+/* ── Zanahoria hint ── */
+.carrotHint {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 12vw, 4rem);
-  letter-spacing: 0.14em;
-  color: rgba(68,85,238,0.08);
-  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 20;
   pointer-events: none;
-  user-select: none;
+  width: max-content;
+}
+
+.carrotText {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
   white-space: nowrap;
+}
+
+.carrotWrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carrotImg {
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
+  display: block;
+  position: relative;
+  z-index: 2;
+  clip-path: inset(0 0 25% 0);
+  margin-bottom: -22px;
+}
+
+.carrotSoil {
+  width: 90px;
+  height: 10px;
+  background: linear-gradient(to bottom, #3a2010, #5a3018);
+  border-radius: 50%;
+  margin-top: -6px;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
 .kissFig {

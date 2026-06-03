@@ -140,6 +140,7 @@ function KissScroll() {
   const translateRight = useTransform(progress, [0, 1], [0, -10])
   const scaleRight     = useTransform(progress, [0, 1], [1, 0.78])
   const labelOpacity = useTransform(progress, [0.85, 1], [0, 1])
+  const hintOpacity  = useTransform(progress, [0, 0.25], [1, 0])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -216,7 +217,22 @@ function KissScroll() {
   return (
     <div ref={sectionRef} className={styles.kissWrap}>
       <div className={styles.kissSticky}>
-        <p className={styles.kissLabel}>haz scroll</p>
+
+        {/* Hint zanahoria */}
+        <motion.div className={styles.carrotHint} style={{ opacity: hintOpacity }}>
+          <p className={styles.carrotText}>desentierra la zanahoria</p>
+          <div className={styles.carrotWrap}>
+            <motion.img
+              src="/photos/zana.png"
+              className={styles.carrotImg}
+              alt="zanahoria"
+              draggable={false}
+              animate={{ y: [0, 0, -16, 0, 0, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', times: [0, 0.3, 0.5, 0.65, 0.8, 1] }}
+            />
+            <div className={styles.carrotSoil} />
+          </div>
+        </motion.div>
 
         <motion.div
           className={`${styles.kissFig} ${styles.kissFigLeft}`}
