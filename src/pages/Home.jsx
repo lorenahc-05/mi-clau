@@ -90,7 +90,7 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          solo para ti
+          para la mía personal
         </motion.p>
 
         <motion.h1
@@ -338,13 +338,11 @@ function CitasBlock({ onPress }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      <p className={styles.citasEyebrow}>✦ tengo algo para ti ✦</p>
+      <p className={styles.citasEyebrow}>✦ vamos a liarla ✦</p>
 
       <h2 className={styles.citasTitle}>CITAS</h2>
 
-      <p className={styles.citasDesc}>
-        Planes para nosotras.<br />Elige dónde vamos este domingo.
-      </p>
+     
 
       <motion.button
         className={styles.citasBtn}
