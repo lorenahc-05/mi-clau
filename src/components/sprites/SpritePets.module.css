@@ -104,6 +104,18 @@
 
 .dpadUp    { grid-area: up;    }
 .dpadLeft  { grid-area: left;  }
-.dpadCenter { grid-area: mid; background: rgba(17,17,17,0.4); border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.08); }
+.dpadCenter { grid-area: mid; background: rgba(255,16,200,0.15); border-radius: 8px; border: 1.5px solid rgba(255,16,200,0.4); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.dpadCenter:active { background: rgba(255,16,200,0.35); }
+
+/* ── Canvas de corazones ── */
+.heartsCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+  image-rendering: pixelated;
+}
 .dpadRight { grid-area: right; }
 .dpadDown  { grid-area: down;  }

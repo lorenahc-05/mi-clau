@@ -1,44 +1,58 @@
-/**
- * SpritePets — monigotes pixel-art autónomos
- *
- * Cada personaje:
- *  - Carga su spritesheet (4×4 = 16 frames)
- *  - Camina autónomamente rebotando en los bordes
- *  - Al hacer clic/tap se selecciona → se puede mover con flechas o D-pad táctil
- *
- * Mix-blend-mode: lighten elimina el fondo negro visualmente hasta que
- * tengas los PNGs con transparencia de remove.bg.
- */
-
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import styles from './SpritePets.module.css'
 
-// ─── Config de personajes ─────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 export const CHARACTERS = [
   {
     id: 'lorena-beige',
     src: '/sprites/lorena-beige.png',
-    cols: 4, rows: 4,
-    frameW: 125, frameH: 125,
-    border: 14,
-    displaySize: 96,
+    cols: 4, rows: 4, frameW: 125, frameH: 125,
+    border: 14, displaySize: 96,
     label: '🧢 Lorena Beige',
   },
   {
     id: 'lorena-leopard',
     src: '/sprites/lorena-leopard.png',
-    cols: 4, rows: 4,
-    frameW: 125, frameH: 125,
-    border: 14,
-    displaySize: 96,
+    cols: 4, rows: 4, frameW: 125, frameH: 125,
+    border: 14, displaySize: 96,
     label: '🐆 Lorena Leopardo',
   },
 ]
 
-const BASE_SPEED     = 1.2
-const WANDER_FRAMES  = 180
-const FPS_ANIM       = 8
-const STEP_KEYS      = 6
+const BASE_SPEED    = 1.2
+const WANDER_FRAMES = 180
+const FPS_ANIM      = 8
+const STEP_KEYS     = 6
+const HUG_DURATION  = 2000   // ms que duran juntos
+const HUG_DIST      = 60     // px de distancia para detectar colisión
+
+// ─── Corazón pixel art (dibujado en canvas) ──────────────────────────────────
+const HEART_PIXELS = [
+  [0,1,1,0,1,1,0],
+  [1,1,1,1,1,1,1],
+  [1,1,1,1,1,1,1],
+  [0,1,1,1,1,1,0],
+  [0,0,1,1,1,0,0],
+  [0,0,0,1,0,0,0],
+]
+const HEART_COLORS = ['#ff2d78','#ff6fa8','#ff0044','#ffaacc','#ff10c8']
+
+function drawPixelHeart(ctx, x, y, size, color) {
+  const px = size / 7
+  for (let row = 0; row < HEART_PIXELS.length; row++) {
+    for (let col = 0; col < HEART_PIXELS[row].length; col++) {
+      if (HEART_PIXELS[row][col]) {
+        ctx.fillStyle = color
+        ctx.fillRect(
+          Math.round(x + col * px),
+          Math.round(y + row * px),
+          Math.ceil(px), Math.ceil(px)
+        )
+      }
+    }
+  }
+}
 
 // ─── Carga de imagen ──────────────────────────────────────────────────────────
 function useImage(src) {
@@ -53,17 +67,78 @@ function useImage(src) {
   return img
 }
 
+// ─── Canvas de corazones flotantes ───────────────────────────────────────────
+function HeartsCanvas({ heartsRef }) {
+  const canvasRef = useRef(null)
+  const rafRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+
+    function resize() {
+      canvas.width  = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const hearts = heartsRef.current
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i]
+        h.y  -= h.vy
+        h.x  += h.vx * Math.sin(h.age * 0.05)
+        h.age++
+        h.alpha = Math.max(0, 1 - h.age / h.life)
+        if (h.age > h.life) { hearts.splice(i, 1); continue }
+        ctx.save()
+        ctx.globalAlpha = h.alpha
+        drawPixelHeart(ctx, h.x, h.y, h.size, h.color)
+        ctx.restore()
+      }
+      rafRef.current = requestAnimationFrame(loop)
+    }
+    loop()
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('resize', resize)
+    }
+  }, [heartsRef])
+
+  return createPortal(
+    <canvas ref={canvasRef} className={styles.heartsCanvas} />,
+    document.body
+  )
+}
+
+function spawnHearts(heartsRef, cx, cy, count = 8) {
+  for (let i = 0; i < count; i++) {
+    heartsRef.current.push({
+      x:     cx + (Math.random() - 0.5) * 60,
+      y:     cy + (Math.random() - 0.5) * 20,
+      vx:    (Math.random() - 0.5) * 0.8,
+      vy:    1.2 + Math.random() * 1.5,
+      size:  8 + Math.random() * 12,
+      color: HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)],
+      age:   0,
+      life:  50 + Math.random() * 40,
+      alpha: 1,
+    })
+  }
+}
+
 // ─── Un personaje ─────────────────────────────────────────────────────────────
 function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
-  const canvasRef = useRef(null)
-  const img = useImage(char.src)
-  const rafRef = useRef(null)
+  const canvasRef  = useRef(null)
+  const img        = useImage(char.src)
+  const rafRef     = useRef(null)
   const selectedRef = useRef(isSelected)
 
-  // Crear estado inicial del personaje y registrarlo en el mapa global
   const petState = useRef(null)
   if (!petState.current) {
-    // Usar window dimensions para la posición inicial (containerSize puede ser 0 aún)
     const W = window.innerWidth
     const H = window.innerHeight
     petState.current = {
@@ -74,6 +149,7 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
       frame: 0,
       wanderCountdown: WANDER_FRAMES,
       facingLeft: false,
+      hugging: false,
     }
     if (stateMapRef) stateMapRef.current[char.id] = petState.current
   }
@@ -103,16 +179,14 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
     if (!img || !canvasRef.current) return
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    const { cols, rows, frameW, frameH, border, displaySize } = char
-    const total = cols * rows
+    const { cols, frameW, frameH, border, displaySize } = char
+    const total = cols * char.rows
     const interval = 1000 / FPS_ANIM
     let lastTime = 0
 
     canvas.width  = displaySize
     canvas.height = displaySize
 
-    // Pre-renderizar frames en offscreen canvas
-    // Si getImageData falla por CORS, usamos mix-blend-mode como fallback
     const frameSize = frameW - border * 2
     const offAll = document.createElement('canvas')
     offAll.width  = displaySize
@@ -129,26 +203,20 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
       )
     }
 
-    // Eliminar fondo oscuro — umbral bajo para no borrar ropa/pelo oscuro
     try {
       const imgData = offCtx.getImageData(0, 0, displaySize, displaySize * total)
       const d = imgData.data
       for (let i = 0; i < d.length; i += 4) {
         const r = d[i], g = d[i+1], b = d[i+2]
         const brightness = (r + g + b) / 3
-        // Solo eliminar píxeles muy oscuros Y con poca saturación (fondo negro/gris)
         const max = Math.max(r, g, b)
         const min = Math.min(r, g, b)
         const saturation = max === 0 ? 0 : (max - min) / max
-        if (brightness < 15) {
-          d[i+3] = 0
-        } else if (brightness < 25 && saturation < 0.3) {
-          d[i+3] = Math.round((brightness / 25) * 255)
-        }
+        if (brightness < 15) d[i+3] = 0
+        else if (brightness < 25 && saturation < 0.3) d[i+3] = Math.round((brightness / 25) * 255)
       }
       offCtx.putImageData(imgData, 0, 0)
     } catch(e) {
-      console.warn('[SpritePets] getImageData bloqueado:', e.message)
       canvas.style.mixBlendMode = 'screen'
     }
 
@@ -157,39 +225,35 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
       const W = containerSize.w
       const H = containerSize.h
 
-      // Movimiento autónomo
-      if (!selectedRef.current) {
-        s.wanderCountdown--
-        if (s.wanderCountdown <= 0) {
-          const angle = Math.random() * Math.PI * 2
-          s.vx = Math.cos(angle) * BASE_SPEED * (0.8 + Math.random() * 0.4)
-          s.vy = Math.sin(angle) * BASE_SPEED * (0.8 + Math.random() * 0.4)
-          s.wanderCountdown = WANDER_FRAMES + Math.floor(Math.random() * 120)
+      if (!s.hugging) {
+        if (!selectedRef.current) {
+          s.wanderCountdown--
+          if (s.wanderCountdown <= 0) {
+            const angle = Math.random() * Math.PI * 2
+            s.vx = Math.cos(angle) * BASE_SPEED * (0.8 + Math.random() * 0.4)
+            s.vy = Math.sin(angle) * BASE_SPEED * (0.8 + Math.random() * 0.4)
+            s.wanderCountdown = WANDER_FRAMES + Math.floor(Math.random() * 120)
+          }
         }
+
+        s.x += s.vx
+        s.y += s.vy
+
+        if (s.x < 0)               { s.x = 0;               s.vx = Math.abs(s.vx);  s.facingLeft = false }
+        if (s.x > W - displaySize) { s.x = W - displaySize;  s.vx = -Math.abs(s.vx); s.facingLeft = true  }
+        if (s.y < 0)               { s.y = 0;               s.vy = Math.abs(s.vy)  }
+        if (s.y > H - displaySize) { s.y = H - displaySize;  s.vy = -Math.abs(s.vy) }
+
+        if (s.vx < -0.1) s.facingLeft = true
+        if (s.vx >  0.1) s.facingLeft = false
       }
-
-      s.x += s.vx
-      s.y += s.vy
-
-      // Rebote
-      if (s.x < 0)               { s.x = 0;               s.vx = Math.abs(s.vx);  s.facingLeft = false }
-      if (s.x > W - displaySize) { s.x = W - displaySize;  s.vx = -Math.abs(s.vx); s.facingLeft = true  }
-      if (s.y < 0)               { s.y = 0;               s.vy = Math.abs(s.vy)  }
-      if (s.y > H - displaySize) { s.y = H - displaySize;  s.vy = -Math.abs(s.vy) }
-
-      if (s.vx < -0.1) s.facingLeft = true
-      if (s.vx >  0.1) s.facingLeft = false
 
       canvas.style.left = `${s.x}px`
       canvas.style.top  = `${s.y}px`
 
-      // Dibuja frame
       if (ts - lastTime >= interval) {
         lastTime = ts
-
         ctx.clearRect(0, 0, displaySize, displaySize)
-
-        // Copiar frame pre-procesado (sin fondo negro) del cache
         if (s.facingLeft) {
           ctx.save()
           ctx.translate(displaySize, 0)
@@ -200,7 +264,6 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
           0, 0, displaySize, displaySize
         )
         if (s.facingLeft) ctx.restore()
-
         s.frame = (s.frame + 1) % total
       }
 
@@ -223,7 +286,7 @@ function SpritePet({ char, containerSize, isSelected, onSelect, stateMapRef }) {
 }
 
 // ─── D-pad ────────────────────────────────────────────────────────────────────
-function DPad({ stateMapRef }) {
+function DPad({ stateMapRef, onShoot }) {
   const handlePress = (dir) => (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -242,7 +305,11 @@ function DPad({ stateMapRef }) {
     <div className={styles.dpad} aria-label="D-pad táctil">
       <button className={`${styles.dpadBtn} ${styles.dpadUp}`}    onTouchStart={handlePress('up')}    onMouseDown={handlePress('up')}    aria-label="Arriba">▲</button>
       <button className={`${styles.dpadBtn} ${styles.dpadLeft}`}  onTouchStart={handlePress('left')}  onMouseDown={handlePress('left')}  aria-label="Izquierda">◀</button>
-      <div    className={styles.dpadCenter} />
+      <button className={`${styles.dpadBtn} ${styles.dpadCenter}`}
+        onTouchStart={(e) => { e.preventDefault(); onShoot() }}
+        onMouseDown={(e)  => { e.preventDefault(); onShoot() }}
+        aria-label="Disparar corazones"
+      >💗</button>
       <button className={`${styles.dpadBtn} ${styles.dpadRight}`} onTouchStart={handlePress('right')} onMouseDown={handlePress('right')} aria-label="Derecha">▶</button>
       <button className={`${styles.dpadBtn} ${styles.dpadDown}`}  onTouchStart={handlePress('down')}  onMouseDown={handlePress('down')}  aria-label="Abajo">▼</button>
     </div>
@@ -252,10 +319,11 @@ function DPad({ stateMapRef }) {
 // ─── Contenedor ───────────────────────────────────────────────────────────────
 export default function SpritePets({ characters = CHARACTERS, className = '' }) {
   const containerRef = useRef(null)
-  // Usar window size directamente — el contenedor es siempre fixed 100dvw x 100dvh
   const [size, setSize] = useState({ w: window.innerWidth, h: window.innerHeight })
   const [selectedId, setSelectedId] = useState(null)
   const stateMapRef = useRef({})
+  const heartsRef   = useRef([])
+  const hugTimerRef = useRef(null)
 
   useEffect(() => {
     const update = () => setSize({ w: window.innerWidth, h: window.innerHeight })
@@ -264,10 +332,81 @@ export default function SpritePets({ characters = CHARACTERS, className = '' }) 
     return () => window.removeEventListener('resize', update)
   }, [])
 
+  // ── Detección de colisión entre seleccionado y otros ──────────────────────
+  useEffect(() => {
+    if (!selectedId) return
+    let rafId
+    function checkCollision() {
+      const map = stateMapRef.current
+      const sel = map[selectedId]
+      if (!sel) return
+      Object.entries(map).forEach(([id, other]) => {
+        if (id === selectedId) return
+        if (sel.hugging || other.hugging) return
+        const dx = (sel.x + 48) - (other.x + 48)
+        const dy = (sel.y + 48) - (other.y + 48)
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < HUG_DIST) {
+          sel.hugging   = true
+          other.hugging = true
+          sel.vx = 0; sel.vy = 0
+          other.vx = 0; other.vy = 0
+
+          const cx = (sel.x + other.x) / 2 + 48
+          const cy = (sel.y + other.y) / 2 + 48
+          const burstInterval = setInterval(() => {
+            spawnHearts(heartsRef, cx, cy, 5)
+          }, 200)
+
+          clearTimeout(hugTimerRef.current)
+          const selId   = selectedId
+          const otherId = id
+          hugTimerRef.current = setTimeout(() => {
+            clearInterval(burstInterval)
+            const map = stateMapRef.current
+            const s1  = map[selId]
+            const s2  = map[otherId]
+            if (s1) {
+              s1.hugging = false
+              s1.vx = BASE_SPEED * (Math.random() > 0.5 ? 1 : -1)
+              s1.vy = BASE_SPEED * (Math.random() > 0.5 ? 1 : -1)
+            }
+            if (s2) {
+              s2.hugging = false
+              s2.vx = s1 ? -s1.vx : BASE_SPEED
+              s2.vy = s1 ? -s1.vy : BASE_SPEED
+            }
+          }, HUG_DURATION)
+        }
+      })
+      rafId = requestAnimationFrame(checkCollision)
+    }
+    rafId = requestAnimationFrame(checkCollision)
+    return () => cancelAnimationFrame(rafId)
+  }, [selectedId])
+
+  // ── Disparo manual (espacio) ──────────────────────────────────────────────
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.code === 'Space' && selectedId) {
+        e.preventDefault()
+        const s = stateMapRef.current[selectedId]
+        if (s) spawnHearts(heartsRef, s.x + 48, s.y + 48, 12)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedId])
+
+  const handleShoot = useCallback(() => {
+    if (!selectedId) return
+    const s = stateMapRef.current[selectedId]
+    if (s) spawnHearts(heartsRef, s.x + 48, s.y + 48, 12)
+  }, [selectedId])
+
   const handleSelect = useCallback((id) => {
     setSelectedId(prev => {
       const next = prev === id ? null : id
-      // Marcar en el estado qué personaje está seleccionado (para D-pad)
       Object.entries(stateMapRef.current).forEach(([key, s]) => {
         s._selected = key === next
       })
@@ -277,6 +416,8 @@ export default function SpritePets({ characters = CHARACTERS, className = '' }) 
 
   return (
     <div ref={containerRef} className={`${styles.container} ${className}`}>
+      <HeartsCanvas heartsRef={heartsRef} />
+
       {size.w > 0 && characters.map(char => (
         <SpritePet
           key={char.id}
@@ -290,11 +431,11 @@ export default function SpritePets({ characters = CHARACTERS, className = '' }) 
 
       {selectedId && (
         <div className={styles.selectedHint}>
-          <span>⬆⬇⬅➡ para mover · tap para soltar</span>
+          <span>⬆⬇⬅➡ mover · espacio 💗 · tap para soltar</span>
         </div>
       )}
 
-      {selectedId && <DPad stateMapRef={stateMapRef} />}
+      {selectedId && <DPad stateMapRef={stateMapRef} onShoot={handleShoot} />}
     </div>
   )
 }
