@@ -160,16 +160,12 @@ export default function Suerte() {
               <p className={styles.modalEyebrow}>antes de tu entrevista…</p>
 
               <motion.div
-                className={styles.modalPhotoWrap}
-                animate={{ rotate: [-3, 2, -3] }}
+                className={styles.modalNoteWrap}
+                animate={{ rotate: [-2, 1.5, -2] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <img src="/photos/clau-entrevista.jpg" alt="Clau" className={styles.modalPhoto} draggable={false} />
-              </motion.div>
-
-              <div className={styles.modalNoteWrap}>
                 <img src="/photos/abrazo-nota.png" alt="un abrazo para ti" className={styles.modalNote} draggable={false} />
-              </div>
+              </motion.div>
 
               <p className={styles.modalWish}>🍀 vas a estar increíble, ya lo verás. mucha suerte hoy 🍀</p>
             </motion.div>
