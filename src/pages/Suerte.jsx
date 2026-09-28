@@ -135,7 +135,7 @@ export default function Suerte() {
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         whileTap={{ scale: 0.94, y: 3 }}
       >
-        ✨ toca aquí, mi amor ✨
+        ✨ toca aquí ✨
       </motion.button>
 
       <AnimatePresence>
