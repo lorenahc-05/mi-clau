@@ -113,12 +113,31 @@ export function PosterArt() {
 
         {/* brazo con la copa */}
         <path d="M214 668 Q252 620 226 572" fill="none" stroke={SKIN} strokeWidth="20" strokeLinecap="round" />
-        <g>
-          <path d="M194 506 H254 L224 546 Z" fill={HOT} />
-          <path d="M203 517 H245" stroke={NIGHT} strokeWidth="2.6" strokeLinecap="round" />
-          <path d="M224 546 V566" stroke={HOT} strokeWidth="4" />
-          <circle cx="234" cy="513" r="6.4" fill={OX} stroke={NIGHT} strokeWidth="2" />
-          <path d="M250 492 L234 513" stroke={CREAM} strokeWidth="2.2" strokeLinecap="round" />
+        {/* box de kebab: durum asomando, vapor y caja abierta */}
+        <g transform="translate(224 565) scale(1.3) translate(-224 -565)">
+          <g fill="none" stroke={CREAM} strokeWidth="2.2" strokeLinecap="round" opacity="0.7">
+            <path d="M212 476 Q206 468 212 460 Q218 452 212 444" />
+            <path d="M232 470 Q226 462 232 454 Q238 446 232 438" />
+          </g>
+          <path d="M187 511 L203 507 L198 524 Z" fill={OX} />
+          <path d="M261 511 L245 507 L250 524 Z" fill={OX} />
+          <path d="M201 524 L206 503 H242 L247 524 Z" fill={RED} />
+          {/* durum */}
+          <g transform="rotate(14 226 506)">
+            <rect x="216" y="484" width="21" height="42" rx="10" fill={CREAM} />
+            <path d="M219 492 Q226 487 234 492" fill="none" stroke={OX} strokeWidth="2" strokeLinecap="round" />
+            <path d="M219 500 L234 500 M219 508 L234 508" stroke={OX} strokeWidth="1.6" strokeLinecap="round" />
+            <path d="M217 486 Q221 478 226 484 Q231 477 236 486 Z" fill={HOT} />
+          </g>
+          {/* relleno */}
+          <circle cx="210" cy="518" r="5.5" fill={HOT} />
+          <circle cx="240" cy="517" r="5" fill={HOT} />
+          <path d="M203 524 Q208 512 216 520 Q222 510 230 520 Q238 510 246 524 Z" fill={SKIN} />
+          {/* caja */}
+          <path d="M197 523 H251 L241 565 H207 Z" fill={HOT} />
+          <path d="M199 534 H249" stroke={NIGHT} strokeWidth="2.4" strokeLinecap="round" />
+          <circle cx="224" cy="548" r="7.5" fill={NIGHT} />
+          <path d="M224 541.5 Q225.5 546.5 230.5 548 Q225.5 549.5 224 554.5 Q222.5 549.5 217.5 548 Q222.5 546.5 224 541.5 Z" fill={HOT} />
         </g>
         <circle cx="226" cy="570" r="11" fill={SKIN} />
 
