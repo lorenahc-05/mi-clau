@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+
+.page {
+  --cita-red: #d4121c;
+  --cita-cream: #fbe8cf;
+  --cita-ink: #111111;
+
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: var(--cita-red);
+  color: var(--cita-cream);
+  overflow: hidden;
+}
+
+/* viñeta suave: oscurece bordes sin romper el rojo de los recortes */
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(70, 0, 0, 0.4);
+  z-index: 2;
+}
+
+/* ── Iconos flotantes ── */
+.floaters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floater {
+  position: absolute;
+  color: var(--cita-ink);
+}
+.floater svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* detalles que "recortan" la silueta mostrando el fondo rojo */
+.cut {
+  stroke: var(--cita-red);
+  fill: none;
+  stroke-linecap: round;
+}
+.cutFill { fill: var(--cita-red); }
+.cutStroke { stroke: var(--cita-red); }
+
+/* ── Cuenta atrás ── */
+.center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.countdown {
+  display: flex;
+  gap: clamp(0.6rem, 3.5vw, 1.8rem);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.digits {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(2.7rem, 14vw, 6rem);
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--cita-cream);
+  text-shadow: 0 3px 0 rgba(17, 17, 17, 0.35);
+}
+
+.label {
+  margin-top: 0.4rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cita-ink);
+}
+
+/* ── tic tac tic tac ── */
+.tick {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.3rem, 5vw, 2rem);
+  color: var(--cita-ink);
+  white-space: nowrap;
+}
+.tick span {
+  display: inline-block;
+  opacity: 0.5;
+  animation: tictac 2s steps(1, end) infinite;
+}
+.tick span:nth-child(1) { animation-delay: 0s; }
+.tick span:nth-child(2) { animation-delay: 0.5s; }
+.tick span:nth-child(3) { animation-delay: 1s; }
+.tick span:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes tictac {
+  0%   { opacity: 1; transform: translateY(-3px) rotate(-3deg); }
+  25%  { opacity: 0.5; transform: none; }
+  100% { opacity: 0.5; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tick span { animation: none; opacity: 1; }
+}

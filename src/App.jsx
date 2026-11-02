@@ -9,6 +9,7 @@ import CitaCustomPage from './pages/CitaCustomPage'
 import Gifts from './pages/Gifts'
 import Suerte from './pages/Suerte'
 import Bien from './pages/Bien'
+import Cita6Nov from './pages/Cita6Nov'
 
 // ── Animated route wrapper ────────────────────────────────────────────────────
 function PageTransition({ children }) {
@@ -36,6 +37,7 @@ function AnimatedRoutes() {
         <Route path="/regalos" element={<PageTransition><Gifts /></PageTransition>} />
         <Route path="/suerte" element={<PageTransition><Suerte /></PageTransition>} />
         <Route path="/bien" element={<PageTransition><Bien /></PageTransition>} />
+        <Route path="/cita6nov" element={<PageTransition><Cita6Nov /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   )
