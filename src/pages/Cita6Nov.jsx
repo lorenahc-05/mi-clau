@@ -3,7 +3,7 @@ import styles from './Cita6Nov.module.css'
 import { PosterArt } from './Cita6NovArt'
 
 // Viernes 6 de noviembre de 2026 — hora local de quedada
-const TARGET = new Date(2026, 10, 6, 17, 0, 0)
+const TARGET = new Date(2026, 10, 6, 16, 0, 0)
 
 function getRemaining() {
   const diff = Math.max(0, TARGET.getTime() - Date.now())
@@ -34,9 +34,6 @@ export default function Cita6Nov() {
       <div className={styles.stage}>
         <PosterArt />
 
-        <p className={styles.hdrL} style={at(24, 22)}>VI · XI · MMXXVI</p>
-        <p className={styles.hdrR} style={{ top: at(0, 22).top }}>Sesión privada</p>
-
         <div role="timer" aria-label="Cuenta atrás hasta el 6 de noviembre">
           <div className={styles.days} style={at(12, 36)}>
             <span>{pad(time.days)}</span>
@@ -65,19 +62,11 @@ export default function Cita6Nov() {
 
         <p className={styles.moonNote} style={at(30, 336)}>la noche lo sabe</p>
 
-        <div className={styles.badge} style={at(22, 736)} aria-hidden>
-          <small>destino</small>
-          <b>¿?</b>
-        </div>
-
-        <div className={styles.offer} style={at(92, 736)}>
-          <strong>
-            Una oferta que
-            <br />
-            no podrás rechazar
-          </strong>
-          <span>Abrigo. Zapato cómodo. Cero preguntas.</span>
-        </div>
+        <p className={styles.offer} style={at(26, 742)}>
+          En mi casa
+          <br />
+          a las 16.00
+        </p>
 
         <div className={styles.date} style={at(262, 730)}>
           <small>vie</small>

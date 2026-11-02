@@ -44,22 +44,17 @@
 }
 
 /* ── tipografía ── */
-.hdrL,
-.hdrR,
 .days,
 .daysLabel,
 .stack,
 .band,
 .moonNote,
-.badge,
 .offer,
 .date {
   position: absolute;
   margin: 0;
 }
 
-.hdrL,
-.hdrR,
 .moonNote {
   font-family: var(--font-body);
   font-weight: 500;
@@ -70,7 +65,6 @@
   white-space: nowrap;
   line-height: 1;
 }
-.hdrR { right: 6.4%; }
 .moonNote { font-size: 2cqw; opacity: 0.7; }
 
 /* días: enorme, con el "error de registro" de la serigrafía */
@@ -167,57 +161,17 @@
   100% { color: var(--ink); transform: none; }
 }
 
-/* ── información en clave ── */
-.badge {
-  width: 16cqw;
-  height: 16cqw;
-  border-radius: 50%;
-  background: var(--ink);
-  border: 0.5cqw solid var(--hot);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-.badge small {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 1.7cqw;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--cream);
-}
-.badge b {
-  font-family: 'Anton', Impact, sans-serif;
-  font-weight: 400;
-  font-size: 7cqw;
-  color: var(--hot);
-  margin-top: 0.3cqw;
-}
-
+/* ── dónde y cuándo ── */
 .offer {
-  width: 42%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.6cqw;
-}
-.offer strong {
+  width: 62%;
   font-family: 'Anton', Impact, sans-serif;
   font-weight: 400;
-  font-size: 4cqw;
-  line-height: 1.08;
-  letter-spacing: 0.02em;
+  font-size: 7.4cqw;
+  line-height: 1.04;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--cream);
-}
-.offer span {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 2.2cqw;
-  line-height: 1.35;
-  color: var(--cream);
-  opacity: 0.75;
+  text-shadow: 0.6cqw 0.6cqw 0 var(--ox);
 }
 
 .date {
