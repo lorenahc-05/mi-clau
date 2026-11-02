@@ -114,6 +114,53 @@ function Padrino() {
   )
 }
 
+// Pin-up de pie: pelo con rulo, mano en la cadera, vestido de vuelo y copa en alto
+function PinUp() {
+  return (
+    <svg viewBox="0 0 100 100" aria-hidden>
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M41 28 Q26 35 30 46 Q33 52 41 50" strokeWidth="4.4" />
+        <path d="M59 28 Q72 27 76 17" strokeWidth="4.4" />
+        <path d="M57 6 Q68 12 62 24" strokeWidth="4" />
+        <path d="M44 84 L41 94 M39 96 L43 96" strokeWidth="4" />
+        <path d="M56 84 L60 94 M58 96 L62 96" strokeWidth="4" />
+      </g>
+      <ellipse cx="50" cy="14" rx="6.4" ry="7.6" fill="currentColor" />
+      <circle cx="43" cy="7" r="5" fill="currentColor" />
+      <rect x="47" y="19" width="6" height="7" fill="currentColor" />
+      <path
+        d="M41 25 Q50 22 59 25 Q61 34 57 42 L57 46 Q70 54 77 80 Q50 90 23 80 Q30 54 43 46 L43 42 Q39 34 41 25 Z"
+        fill="currentColor"
+      />
+      <path d="M43 28 Q50 35 57 28" className={styles.cut} strokeWidth="2" />
+      <path d="M25 80 Q50 88 75 80" className={styles.cut} strokeWidth="2" />
+      <path d="M70 5 H84 L77 14 Z M77 14 V19 M73 19 H81" fill="currentColor" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+// Pin-up sentada en una copa de cóctel, con las piernas por fuera
+function PinUpGlass() {
+  return (
+    <svg viewBox="0 0 100 100" aria-hidden>
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M42 44 Q29 42 26 27" strokeWidth="4.6" />
+        <path d="M58 45 Q70 52 70 60" strokeWidth="4.6" />
+        <path d="M54 64 Q70 57 80 62 L85 82 L79 86" strokeWidth="6" />
+        <path d="M56 17 Q68 20 63 32" strokeWidth="3.6" />
+      </g>
+      <path d="M40 41 H60 Q62 50 56 57 Q60 64 63 70 H37 Q40 64 44 57 Q38 50 40 41 Z" fill="currentColor" />
+      <ellipse cx="50" cy="28" rx="6.4" ry="7.6" fill="currentColor" />
+      <circle cx="44" cy="20.5" r="4.8" fill="currentColor" />
+      <rect x="47.5" y="33" width="5" height="9" fill="currentColor" />
+      <path d="M16 6 H36 L26 17 Z M26 17 V25 M22 25 H30" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 66 H88 L50 91 Z" fill="currentColor" className={styles.cutStroke} strokeWidth="2.8" strokeLinejoin="round" />
+      <path d="M47 90 H53 V96 H47 Z" fill="currentColor" />
+      <path d="M32 100 C40 93 60 93 68 100 Z" fill="currentColor" />
+    </svg>
+  )
+}
+
 function Sparkle() {
   return (
     <svg viewBox="0 0 100 100" aria-hidden>
@@ -122,20 +169,28 @@ function Sparkle() {
   )
 }
 
-const ICONS = { cocktail: Cocktail, sax: Sax, grid: Grid, padrino: Padrino, sparkle: Sparkle }
+const ICONS = {
+  cocktail: Cocktail,
+  sax: Sax,
+  grid: Grid,
+  padrino: Padrino,
+  pinup: PinUp,
+  pinupGlass: PinUpGlass,
+  sparkle: Sparkle,
+}
 
-// left/top en %, size en px, rot en grados, dur/delay en segundos
+// left/top en %, size en px, rot en grados, dur/delay en segundos, flip = espejo
 const FLOATERS = [
-  { t: 'padrino', left: 6, top: 5, size: 96, rot: -8, dur: 6.5, delay: 0 },
+  { t: 'padrino', left: 6, top: 5, size: 90, rot: -8, dur: 6.5, delay: 0 },
   { t: 'sax', left: 70, top: 4, size: 92, rot: 10, dur: 7.2, delay: 0.8 },
-  { t: 'cocktail', left: 38, top: 14, size: 70, rot: 6, dur: 5.6, delay: 1.4 },
+  { t: 'pinupGlass', left: 36, top: 11, size: 86, rot: 5, dur: 5.8, delay: 1.4 },
   { t: 'grid', left: 80, top: 24, size: 66, rot: -6, dur: 6.8, delay: 0.3 },
-  { t: 'cocktail', left: 3, top: 26, size: 64, rot: -10, dur: 6, delay: 1.9 },
+  { t: 'pinup', left: 2, top: 24, size: 92, rot: -9, dur: 6, delay: 1.9, flip: true },
   { t: 'sax', left: 4, top: 68, size: 84, rot: -12, dur: 7, delay: 0.5 },
-  { t: 'padrino', left: 76, top: 66, size: 90, rot: 9, dur: 6.2, delay: 1.2 },
-  { t: 'grid', left: 36, top: 76, size: 74, rot: 5, dur: 7.4, delay: 0.1 },
-  { t: 'cocktail', left: 66, top: 82, size: 70, rot: -7, dur: 5.8, delay: 2.1 },
-  { t: 'padrino', left: 12, top: 84, size: 62, rot: 12, dur: 6.6, delay: 1.6 },
+  { t: 'pinup', left: 74, top: 62, size: 104, rot: 8, dur: 6.2, delay: 1.2 },
+  { t: 'grid', left: 36, top: 78, size: 72, rot: 5, dur: 7.4, delay: 0.1 },
+  { t: 'cocktail', left: 64, top: 84, size: 66, rot: -7, dur: 5.8, delay: 2.1 },
+  { t: 'pinupGlass', left: 8, top: 82, size: 80, rot: -6, dur: 6.6, delay: 1.6, flip: true },
   { t: 'sparkle', left: 24, top: 12, size: 22, rot: 0, dur: 4.2, delay: 0.2 },
   { t: 'sparkle', left: 60, top: 22, size: 16, rot: 0, dur: 3.8, delay: 1.1 },
   { t: 'sparkle', left: 90, top: 50, size: 20, rot: 0, dur: 4.6, delay: 0.6 },
@@ -181,7 +236,7 @@ export default function Cita6Nov() {
               }
               transition={{ duration: f.dur, delay: f.delay, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <Icon />
+              {f.flip ? <div className={styles.flip}><Icon /></div> : <Icon />}
             </motion.div>
           )
         })}
