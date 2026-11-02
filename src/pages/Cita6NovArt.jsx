@@ -1,351 +1,230 @@
-import { useId } from 'react'
 import styles from './Cita6Nov.module.css'
 
-// Ilustraciones del póster. Todas pintan con `currentColor` (rojo) y "recortan"
-// los detalles con el negro del fondo mediante las clases cut / cutFill / cutStroke.
+// Cartel de serigrafía en rojos y negro. Todo vive en un lienzo de 375×812
+// (la misma proporción que el póster HTML que lo envuelve).
 
-// Estampado de leopardo compartido (los SVG lo usan con fill="url(#cita-leo)")
-export function LeoDefs() {
-  return (
-    <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden>
-      <defs>
-        <pattern id="cita-leo" width="26" height="26" patternUnits="userSpaceOnUse">
-          <rect width="26" height="26" fill="#c9121f" />
-          <g fill="#ea3a46" stroke="#120305" strokeWidth="2.4" strokeLinecap="round">
-            <ellipse cx="8" cy="8" rx="5" ry="3.4" transform="rotate(25 8 8)" strokeDasharray="19 8" />
-            <ellipse cx="21" cy="15" rx="4.6" ry="3.2" transform="rotate(-35 21 15)" strokeDasharray="17 8" />
-            <ellipse cx="9" cy="21" rx="4.4" ry="3" transform="rotate(70 9 21)" strokeDasharray="16 7.7" />
-          </g>
-        </pattern>
-      </defs>
-    </svg>
+const INK = '#0a0204'
+const NIGHT = '#14040a'
+const WINE = '#4a0a12'
+const OX = '#7d0f1b'
+const SKIN = '#8f1420'
+const RED = '#d4141f'
+const HOT = '#ff3b2f'
+const CREAM = '#f2e0c4'
+
+const CX = 190
+const CY = 500
+
+// Rayos de fondo (cuñas alternas) que salen del disco
+const WEDGES = []
+for (let i = 0; i < 24; i += 2) {
+  const a1 = (i * 15 * Math.PI) / 180
+  const a2 = ((i + 1) * 15 * Math.PI) / 180
+  const R = 900
+  WEDGES.push(
+    `M${CX} ${CY} L${(CX + R * Math.cos(a1)).toFixed(1)} ${(CY + R * Math.sin(a1)).toFixed(1)} L${(CX + R * Math.cos(a2)).toFixed(1)} ${(CY + R * Math.sin(a2)).toFixed(1)} Z`,
   )
 }
 
-// ── Del primer diseño ─────────────────────────────────────────────────────────
-export function Cocktail() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <path d="M68 4 L50 31" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-      <path d="M12 22 H88 L50 60 Z" fill="currentColor" />
-      <path d="M22 32 H78" className={styles.cut} strokeWidth="2.4" />
-      <circle cx="49" cy="33" r="6.5" fill="currentColor" className={styles.cutStroke} strokeWidth="2.2" />
-      <circle cx="49" cy="33" r="2" className={styles.cutFill} />
-      <path d="M47 58 H53 V86 H47 Z" fill="currentColor" />
-      <path d="M28 93 C36 82 64 82 72 93 Z" fill="currentColor" />
-    </svg>
-  )
+// Rejilla en diagonal del disco
+const LATTICE = []
+for (let k = -300; k <= 300; k += 24) {
+  LATTICE.push(`M${CX - 150 + k} ${CY - 150} L${CX + 150 + k} ${CY + 150}`)
+  LATTICE.push(`M${CX + 150 + k} ${CY - 150} L${CX - 150 + k} ${CY + 150}`)
 }
 
-export function Sax() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10 13 L22 10" strokeWidth="5" />
-        <path d="M22 10 Q38 8 40 28 L40 64 Q40 90 56 90 Q70 90 70 68 L70 58" strokeWidth="10" />
-      </g>
-      <path d="M56 46 H86 L78 64 H62 Z" fill="currentColor" />
-      <path d="M60 51 H82" className={styles.cut} strokeWidth="2.4" />
-      <g className={styles.cutFill}>
-        <circle cx="40" cy="34" r="2.8" />
-        <circle cx="40" cy="46" r="2.8" />
-        <circle cx="40" cy="58" r="2.8" />
-        <circle cx="70" cy="74" r="2.8" />
-      </g>
-    </svg>
-  )
-}
-
-export function Grid() {
-  const id = useId()
-  const lines = []
-  for (let k = -80; k <= 180; k += 15) {
-    lines.push(<path key={`a${k}`} d={`M${k} 0 L${k + 100} 100`} />)
-    lines.push(<path key={`b${k}`} d={`M${k + 100} 0 L${k} 100`} />)
-  }
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <defs>
-        <clipPath id={id}>
-          <circle cx="50" cy="54" r="38" />
-        </clipPath>
-      </defs>
-      <path d="M50 4 V16" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-      <circle cx="50" cy="54" r="38" fill="currentColor" />
-      <g clipPath={`url(#${id})`} className={styles.cut} strokeWidth="2.2">
-        {lines}
-      </g>
-    </svg>
-  )
-}
-
-export function Padrino() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <path d="M6 100 Q8 72 34 66 L50 82 L66 66 Q92 72 94 100 Z" fill="currentColor" />
-      <path d="M50 82 L38 66 H62 Z" className={styles.cutFill} />
-      <path d="M50 73 L40 67 V79 Z M50 73 L60 67 V79 Z" fill="currentColor" />
-      <circle cx="50" cy="73" r="2.6" fill="currentColor" />
-      <path d="M34 70 L47 94" className={styles.cut} strokeWidth="2" />
-      <path d="M66 70 L53 94" className={styles.cut} strokeWidth="2" />
-      <path d="M33 38 Q33 62 50 66 Q67 62 67 38 Z" fill="currentColor" />
-      <path d="M44 66 H56 V70 H44 Z" fill="currentColor" />
-      <path d="M31 36 Q29 8 50 8 Q71 8 69 36 Z" fill="currentColor" />
-      <path d="M30 28 H70" className={styles.cut} strokeWidth="3.4" />
-      <path
-        d="M12 38 Q50 22 88 38 Q50 48 12 38 Z"
-        fill="currentColor"
-        className={styles.cutStroke}
-        strokeWidth="2.4"
-        strokeLinejoin="round"
-      />
-      <circle cx="71" cy="82" r="6.2" className={styles.cutFill} />
-      <path
-        d="M71 82 m-2 0 a2 2 0 1 1 2 2 a4 4 0 1 1 -4 -4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-// Pin-up de pie: pelo con rulo, mano en la cadera, vestido de leopardo y copa en alto
-export function PinUp() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M41 28 Q26 35 30 46 Q33 52 41 50" strokeWidth="4.4" />
-        <path d="M59 28 Q72 27 76 17" strokeWidth="4.4" />
-        <path d="M57 6 Q68 12 62 24" strokeWidth="4" />
-        <path d="M44 84 L41 94 M39 96 L43 96" strokeWidth="4" />
-        <path d="M56 84 L60 94 M58 96 L62 96" strokeWidth="4" />
-      </g>
-      <ellipse cx="50" cy="14" rx="6.4" ry="7.6" fill="currentColor" />
-      <circle cx="43" cy="7" r="5" fill="currentColor" />
-      <rect x="47" y="19" width="6" height="7" fill="currentColor" />
-      <path
-        d="M41 25 Q50 22 59 25 Q61 34 57 42 L57 46 Q70 54 77 80 Q50 90 23 80 Q30 54 43 46 L43 42 Q39 34 41 25 Z"
-        fill="url(#cita-leo)"
-      />
-      <path d="M43 28 Q50 35 57 28" className={styles.cut} strokeWidth="2" />
-      <path d="M25 80 Q50 88 75 80" className={styles.cut} strokeWidth="2" />
-      <path d="M70 5 H84 L77 14 Z M77 14 V19 M73 19 H81" fill="currentColor" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-// Pin-up sentada en una copa de cóctel, con las piernas por fuera
-export function PinUpGlass() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M42 44 Q29 42 26 27" strokeWidth="4.6" />
-        <path d="M58 45 Q70 52 70 60" strokeWidth="4.6" />
-        <path d="M54 64 Q70 57 80 62 L85 82 L79 86" strokeWidth="6" />
-        <path d="M56 17 Q68 20 63 32" strokeWidth="3.6" />
-      </g>
-      <path d="M40 41 H60 Q62 50 56 57 Q60 64 63 70 H37 Q40 64 44 57 Q38 50 40 41 Z" fill="currentColor" />
-      <ellipse cx="50" cy="28" rx="6.4" ry="7.6" fill="currentColor" />
-      <circle cx="44" cy="20.5" r="4.8" fill="currentColor" />
-      <rect x="47.5" y="33" width="5" height="9" fill="currentColor" />
-      <path d="M16 6 H36 L26 17 Z M26 17 V25 M22 25 H30" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M12 66 H88 L50 91 Z" fill="currentColor" className={styles.cutStroke} strokeWidth="2.8" strokeLinejoin="round" />
-      <path d="M47 90 H53 V96 H47 Z" fill="currentColor" />
-      <path d="M32 100 C40 93 60 93 68 100 Z" fill="currentColor" />
-    </svg>
-  )
-}
-
-export function Sparkle() {
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <path d="M50 2 Q54 46 98 50 Q54 54 50 98 Q46 54 2 50 Q46 46 50 2 Z" fill="currentColor" />
-    </svg>
-  )
-}
-
-// Estrella de ocho puntas, solo contorno
-export function Star8() {
+// Estrella de ocho puntas
+function star8(cx, cy, R, r) {
   const pts = []
   for (let i = 0; i < 16; i++) {
-    const r = i % 2 ? 24 : 48
+    const rad = i % 2 ? r : R
     const a = (Math.PI * 2 * i) / 16 - Math.PI / 2
-    pts.push(`${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`)
+    pts.push(`${(cx + rad * Math.cos(a)).toFixed(1)},${(cy + rad * Math.sin(a)).toFixed(1)}`)
   }
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <polygon points={pts.join(' ')} fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinejoin="round" />
-      <circle cx="50" cy="50" r="5" fill="currentColor" />
-    </svg>
-  )
+  return pts.join(' ')
 }
 
-// ── Nuevas, del estilo póster ─────────────────────────────────────────────────
-export function SunFace() {
-  const rays = []
-  for (let i = 0; i < 16; i++) {
-    rays.push(
-      <path
-        key={i}
-        d="M60 3 Q67 13 65 27 L55 27 Q53 13 60 3 Z"
-        transform={`rotate(${i * 22.5} 60 60)`}
-        fill={i % 2 ? 'currentColor' : '#8e0f1a'}
-      />,
-    )
-  }
-  return (
-    <svg viewBox="0 0 120 120" aria-hidden>
-      <g className={styles.spin}>{rays}</g>
-      <circle cx="60" cy="60" r="33" fill="currentColor" />
-      <circle cx="60" cy="60" r="28" fill="none" className={styles.cut} strokeWidth="1.6" strokeDasharray="1 5.2" />
-      <g className={styles.cut} strokeWidth="2.6">
-        <path d="M43 57 Q49 50 55 57" />
-        <path d="M65 57 Q71 50 77 57" />
-        <path d="M60 57 Q56 65 61 67" strokeWidth="2.2" />
-      </g>
-      <path d="M51 73 Q60 82 69 73 Q60 77 51 73 Z" className={styles.cutFill} />
-      <circle cx="44" cy="67" r="3.4" fill="#8e0f1a" />
-      <circle cx="76" cy="67" r="3.4" fill="#8e0f1a" />
-    </svg>
-  )
+// Fases de la luna: nueva, creciente, cuarto, gibosa, llena
+function moonPath(cx, cy, r, phase) {
+  if (phase === 4) return `M${cx} ${cy - r} A${r} ${r} 0 1 1 ${cx} ${cy + r} A${r} ${r} 0 1 1 ${cx} ${cy - r} Z`
+  const rx = [0, 0.55 * r, 0, 0.55 * r][phase]
+  const sw = phase === 3 ? 1 : 0
+  return `M${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx} ${cy + r} A${rx} ${r} 0 0 ${sw} ${cx} ${cy - r} Z`
 }
 
-export function MoonFace() {
-  const id = useId()
+export function PosterArt() {
   return (
-    <svg viewBox="0 0 100 100" aria-hidden>
+    <svg className={styles.art} viewBox="0 0 375 812" preserveAspectRatio="xMidYMid slice" aria-hidden>
       <defs>
-        <mask id={id}>
-          <rect width="100" height="100" fill="#fff" />
-          <circle cx="74" cy="40" r="34" fill="#000" />
-        </mask>
-      </defs>
-      <circle cx="46" cy="54" r="42" fill="currentColor" mask={`url(#${id})`} />
-      <g className={styles.cut} strokeWidth="2.6">
-        <path d="M12 58 Q19 51 26 58" />
-        <path d="M17 76 Q24 82 32 74" />
-      </g>
-      <circle cx="14" cy="68" r="3.2" fill="#8e0f1a" />
-      <circle cx="82" cy="78" r="3" fill="currentColor" />
-    </svg>
-  )
-}
-
-// Hoja de monstera: contorno de corazón, nervio central y cortes que llegan al borde
-export function Monstera() {
-  const id = useId()
-  const leaf = 'M52 98 C8 86 2 44 26 20 C34 12 44 8 52 12 C62 6 76 10 84 22 C100 44 94 84 52 98 Z'
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      <defs>
-        <clipPath id={id}>
-          <path d={leaf} />
+        <radialGradient id="pa-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor="#3b0a13" />
+          <stop offset="1" stopColor={NIGHT} />
+        </radialGradient>
+        <clipPath id="pa-disc">
+          <circle cx={CX} cy={CY} r="150" />
         </clipPath>
+        <filter id="pa-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
       </defs>
-      <path d={leaf} fill="currentColor" />
-      <g className={styles.cut} strokeWidth="3.2" clipPath={`url(#${id})`}>
-        <path d="M52 14 Q50 56 52 98" strokeWidth="2.4" />
-        <path d="M51 34 L8 22" />
-        <path d="M50 52 L0 46" />
-        <path d="M50 68 L2 74" />
-        <path d="M51 82 L20 98" />
-        <path d="M52 36 L96 26" />
-        <path d="M52 54 L102 52" />
-        <path d="M52 70 L98 78" />
-        <path d="M52 84 L82 98" />
-      </g>
-      <g className={styles.cutFill}>
-        <ellipse cx="40" cy="42" rx="2.6" ry="4.4" transform="rotate(20 40 42)" />
-        <ellipse cx="64" cy="44" rx="2.6" ry="4.4" transform="rotate(-20 64 44)" />
-        <ellipse cx="38" cy="62" rx="2.6" ry="4.4" transform="rotate(-18 38 62)" />
-        <ellipse cx="66" cy="64" rx="2.6" ry="4.4" transform="rotate(18 66 64)" />
-      </g>
-    </svg>
-  )
-}
 
-// Rama de palmera: tallo curvo con hojitas a cada lado
-export function Frond() {
-  const P0 = [28, 98]
-  const C = [14, 48]
-  const P1 = [72, 6]
-  const leaves = []
-  const N = 10
-  for (let i = 1; i <= N; i++) {
-    const t = i / (N + 1)
-    const x = (1 - t) ** 2 * P0[0] + 2 * (1 - t) * t * C[0] + t * t * P1[0]
-    const y = (1 - t) ** 2 * P0[1] + 2 * (1 - t) * t * C[1] + t * t * P1[1]
-    const dx = 2 * (1 - t) * (C[0] - P0[0]) + 2 * t * (P1[0] - C[0])
-    const dy = 2 * (1 - t) * (C[1] - P0[1]) + 2 * t * (P1[1] - C[1])
-    const len = Math.hypot(dx, dy)
-    const tx = dx / len
-    const ty = dy / len
-    const nx = -ty
-    const ny = tx
-    const L = 26 * (1 - 0.5 * t)
-    for (const side of [-1, 1]) {
-      const ex = x + side * nx * L + tx * L * 0.55
-      const ey = y + side * ny * L + ty * L * 0.55
-      leaves.push(
-        <path
-          key={`${i}${side}`}
-          d={`M${x.toFixed(1)} ${y.toFixed(1)} L${ex.toFixed(1)} ${ey.toFixed(1)}`}
-          stroke={(i + side) % 2 ? 'currentColor' : '#8e0f1a'}
-          strokeWidth="6"
-          strokeLinecap="round"
-          fill="none"
-        />,
-      )
-    }
-  }
-  return (
-    <svg viewBox="0 0 100 100" aria-hidden>
-      {leaves}
-      <path d={`M${P0} Q${C} ${P1}`} stroke="#8e0f1a" strokeWidth="3" fill="none" strokeLinecap="round" />
-    </svg>
-  )
-}
+      {/* fondo + rayos */}
+      <rect width="375" height="812" fill="url(#pa-glow)" />
+      {WEDGES.map((d, i) => (
+        <path key={i} d={d} fill="#1d060c" />
+      ))}
 
-export function Candle() {
-  return (
-    <svg viewBox="0 0 50 110" aria-hidden>
-      <g className={styles.flame}>
-        <path d="M25 3 Q40 22 25 37 Q10 22 25 3 Z" fill="currentColor" />
-        <path d="M25 17 Q32 27 25 34 Q18 27 25 17 Z" fill="#8e0f1a" />
+      {/* disco-rejilla */}
+      <g className={styles.discSpin}>
+        <circle cx={CX} cy={CY} r="150" fill={OX} />
+        <g clipPath="url(#pa-disc)" stroke={NIGHT} strokeWidth="2.6" fill="none">
+          {LATTICE.map((d, i) => (
+            <path key={i} d={d} />
+          ))}
+        </g>
       </g>
-      <path d="M25 37 V45" stroke="#8e0f1a" strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M10 48 H40 V100 H10 Z" fill="currentColor" />
-      <ellipse cx="25" cy="48" rx="15" ry="5" fill="#8e0f1a" />
-      <g className={styles.cut} strokeWidth="3">
-        <path d="M17 54 V70" />
-        <path d="M32 54 V62" />
-      </g>
-      <path d="M4 100 H46 L42 108 H8 Z" fill="#8e0f1a" />
-    </svg>
-  )
-}
+      <circle cx={CX} cy={CY} r="150" fill="none" stroke={RED} strokeWidth="5" />
+      <circle cx={CX} cy={CY} r="163" fill="none" stroke={WINE} strokeWidth="2" strokeDasharray="2 7" strokeLinecap="round" />
 
-// Corazón con un ojo dentro
-export function EyeHeart() {
-  return (
-    <svg viewBox="0 0 100 92" aria-hidden>
-      <path
-        d="M50 88 C8 56 2 36 2 24 C2 10 14 2 26 2 C38 2 46 10 50 18 C54 10 62 2 74 2 C86 2 98 10 98 24 C98 36 92 56 50 88 Z"
-        fill="currentColor"
-      />
-      <path d="M17 42 Q50 14 83 42 Q50 70 17 42 Z" className={styles.cutFill} />
-      <circle cx="50" cy="42" r="12" fill="currentColor" />
-      <circle cx="50" cy="42" r="5.4" className={styles.cutFill} />
-      <circle cx="54" cy="38" r="2.2" fill="currentColor" />
-      <g className={styles.cut} strokeWidth="2.6">
-        <path d="M29 26 L24 17" />
-        <path d="M40 20 L37 10" />
-        <path d="M50 17 V7" />
-        <path d="M60 20 L63 10" />
-        <path d="M71 26 L76 17" />
+      <g transform="translate(0 24)">
+        {/* ── pin-up ── */}
+        {/* melena */}
+        <g fill={INK}>
+          <circle cx="135" cy="430" r="70" />
+          <circle cx="80" cy="470" r="55" />
+          <circle cx="60" cy="540" r="52" />
+          <circle cx="190" cy="455" r="55" />
+          <circle cx="205" cy="520" r="45" />
+          <circle cx="110" cy="400" r="45" />
+          <circle cx="165" cy="395" r="42" />
+        </g>
+        <g fill="none" stroke="#2a0a10" strokeWidth="3" strokeLinecap="round">
+          <path d="M70 430 Q100 380 156 392" />
+          <path d="M40 520 Q36 470 70 446" />
+          <path d="M214 480 Q226 520 206 560" />
+        </g>
+
+        {/* cuerpo */}
+        <path d="M4 800 Q14 650 108 636 L162 636 Q256 650 268 800 Z" fill={SKIN} />
+        <path d="M112 560 L108 646 L162 646 L158 560 Z" fill="#6a0e18" />
+        <path d="M4 800 L4 702 Q70 668 135 692 Q200 668 268 702 L268 800 Z" fill={INK} />
+        <path d="M8 706 Q70 672 135 696 Q200 672 264 706" fill="none" stroke={HOT} strokeWidth="2.6" strokeLinecap="round" />
+
+        {/* brazo con la copa */}
+        <path d="M214 668 Q252 620 226 572" fill="none" stroke={SKIN} strokeWidth="20" strokeLinecap="round" />
+        <g>
+          <path d="M194 506 H254 L224 546 Z" fill={HOT} />
+          <path d="M203 517 H245" stroke={NIGHT} strokeWidth="2.6" strokeLinecap="round" />
+          <path d="M224 546 V566" stroke={HOT} strokeWidth="4" />
+          <circle cx="234" cy="513" r="6.4" fill={OX} stroke={NIGHT} strokeWidth="2" />
+          <path d="M250 492 L234 513" stroke={CREAM} strokeWidth="2.2" strokeLinecap="round" />
+        </g>
+        <circle cx="226" cy="570" r="11" fill={SKIN} />
+
+        {/* cara */}
+        <ellipse cx="135" cy="520" rx="41" ry="52" fill={SKIN} />
+        <path d="M150 482 Q172 500 166 548 Q150 560 142 548 Q160 520 150 482 Z" fill="#b21d28" opacity="0.55" />
+        <path d="M92 500 Q100 455 140 452 Q180 452 182 498 Q160 472 130 480 Q108 486 92 500 Z" fill={INK} />
+        {/* antifaz rojo */}
+        <path d="M96 520 Q116 506 136 518 Q156 506 176 520 L172 536 Q154 528 136 536 Q118 528 100 536 Z" fill={HOT} />
+        <path d="M104 524 Q116 517 128 524 Q116 531 104 524 Z" fill={INK} />
+        <path d="M144 524 Q156 517 168 524 Q156 531 144 524 Z" fill={INK} />
+        <path d="M104 524 L95 517 M168 524 L177 517" stroke={INK} strokeWidth="3" strokeLinecap="round" />
+        <path d="M100 506 Q116 494 130 504 M140 504 Q156 494 172 506" fill="none" stroke={INK} strokeWidth="3.6" strokeLinecap="round" />
+        <path d="M135 538 L131 558 Q135 562 141 558" fill="none" stroke="#5e0c16" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M114 574 Q125 563 135 569 Q145 563 156 574 Q135 594 114 574 Z" fill={HOT} />
+        <path d="M116 575 Q135 579 154 575" fill="none" stroke={INK} strokeWidth="1.7" />
+        <circle cx="161" cy="562" r="1.9" fill={INK} />
+        <circle cx="92" cy="566" r="11" fill="none" stroke={HOT} strokeWidth="4" />
+        <circle cx="178" cy="566" r="11" fill="none" stroke={HOT} strokeWidth="4" />
+
+        {/* sombrero de padrino ladeado */}
+        <g transform="translate(94 396) rotate(-16)">
+          <ellipse cx="0" cy="0" rx="76" ry="15" fill="#a30f1a" />
+          <path d="M-46 -2 Q-50 -54 -6 -56 Q42 -54 46 -2 Z" fill={RED} />
+          <path d="M-30 -50 Q-6 -40 30 -50" fill="none" stroke="#a30f1a" strokeWidth="3" strokeLinecap="round" />
+          <path d="M-47 -14 Q0 -6 47 -14 L45 -2 Q0 6 -45 -2 Z" fill={INK} />
+        </g>
+
+        {/* rosa en el pelo */}
+        <g transform="translate(196 424) rotate(18)">
+          <ellipse cx="-17" cy="8" rx="12" ry="5" transform="rotate(-24 -17 8)" fill={OX} />
+          <ellipse cx="17" cy="8" rx="12" ry="5" transform="rotate(24 17 8)" fill={OX} />
+          <circle r="15" fill={HOT} />
+          <path d="M0 0 m-3 0 a3 3 0 1 1 3 3 a6 6 0 1 1 -6 -6 a9 9 0 1 1 9 9 a12 12 0 1 1 -12 -12" fill="none" stroke={SKIN} strokeWidth="2.2" strokeLinecap="round" />
+        </g>
+
+        {/* ── saxofón con ojo ── */}
+        <g strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <path d="M297 340 Q294 298 330 292" stroke={SKIN} strokeWidth="19" />
+          <path d="M297 340 Q294 298 330 292" stroke={RED} strokeWidth="13" />
+          <path d="M330 292 L364 285" stroke={INK} strokeWidth="13" />
+          <path d="M348 289 L352 288" stroke={CREAM} strokeWidth="3" />
+        </g>
+        <path d="M279 336 Q275 470 270 566 Q268 606 258 634 L346 634 Q338 606 334 566 Q322 470 316 336 Z" fill={SKIN} />
+        <path d="M279 336 Q275 470 270 566 Q268 606 258 634 L318 634 Q312 604 308 566 Q302 470 300 336 Z" fill={RED} />
+        <path d="M284 340 Q280 470 277 566" fill="none" stroke={HOT} strokeWidth="4" strokeLinecap="round" />
+        <g fill={OX} stroke={INK} strokeWidth="2.4">
+          <circle cx="290" cy="400" r="7.5" />
+          <circle cx="288" cy="452" r="7.5" />
+          <circle cx="286" cy="504" r="8" />
+          <circle cx="284" cy="556" r="8.5" />
+        </g>
+        <g stroke={INK} strokeWidth="2.4" strokeLinecap="round" fill="none">
+          <path d="M298 400 H326 M296 452 H328 M294 504 H330 M292 556 H334" />
+          <path d="M300 340 Q304 470 312 600" stroke={WINE} strokeWidth="2" />
+        </g>
+        <path d="M264 596 H330" stroke={INK} strokeWidth="3.4" />
+        <ellipse cx="297" cy="646" rx="60" ry="30" fill={HOT} />
+        <ellipse cx="297" cy="648" rx="51" ry="23" fill={INK} />
+        {/* el ojo */}
+        <path d="M260 648 Q297 624 334 648 Q297 672 260 648 Z" fill={CREAM} />
+        <g className={styles.iris}>
+          <circle cx="297" cy="648" r="12" fill={HOT} />
+          <circle cx="297" cy="648" r="5" fill={INK} />
+          <circle cx="301" cy="644" r="2.2" fill={CREAM} />
+        </g>
+        <path d="M260 648 Q297 624 334 648" fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round" />
       </g>
+
+      {/* misticismo: lunas, estrellas, chispas */}
+      <g>
+        {[0, 1, 2, 3, 4].map((p) => (
+          <g key={p}>
+            <circle cx={38 + p * 25} cy="318" r="8.5" fill="none" stroke={HOT} strokeWidth="1.6" />
+            <path d={moonPath(38 + p * 25, 318, 8.5, p)} fill={HOT} />
+          </g>
+        ))}
+        <polygon points={star8(26, 372, 11, 5.2)} fill="none" stroke={HOT} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle} />
+        <polygon points={star8(350, 372, 9, 4.4)} fill="none" stroke={RED} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle2} />
+        <path d="M240 340 Q243 350 253 352 Q243 354 240 364 Q237 354 227 352 Q237 350 240 340 Z" fill={HOT} className={styles.twinkle} />
+        <path d="M62 700 Q64 706 70 708 Q64 710 62 716 Q60 710 54 708 Q60 706 62 700 Z" fill={HOT} className={styles.twinkle2} />
+      </g>
+
+      {/* bloque de la fecha */}
+      <path d="M262 812 L262 744 Q262 720 286 720 L375 720 L375 812 Z" fill={HOT} />
+
+      {/* teclas de piano / rejilla inferior */}
+      <g>
+        {Array.from({ length: 24 }).map((_, i) => (
+          <rect
+            key={i}
+            x={10 + i * 10.5}
+            y={i % 3 === 0 ? 790 : 796}
+            width="6"
+            height={i % 3 === 0 ? 16 : 10}
+            fill={i % 4 === 0 ? CREAM : i % 2 ? HOT : OX}
+          />
+        ))}
+      </g>
+
+      {/* marco */}
+      <rect x="7" y="7" width="361" height="798" fill="none" stroke={CREAM} strokeOpacity="0.4" strokeWidth="1.2" />
+      <rect x="11" y="11" width="353" height="790" fill="none" stroke={CREAM} strokeOpacity="0.22" strokeWidth="0.7" />
+
+      {/* grano de impresión */}
+      <rect width="375" height="812" filter="url(#pa-grain)" opacity="0.2" style={{ mixBlendMode: 'overlay' }} />
     </svg>
   )
 }
