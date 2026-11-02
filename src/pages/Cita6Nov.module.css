@@ -1,5 +1,7 @@
-/* Cartel de serigrafía en rojos y negro. Las medidas van en cqw (1cqw = 3.75px
-   sobre el lienzo de 375×812) para que todo escale con el póster. */
+/* Cartel de serigrafía en rojos y negro que llena SIEMPRE la pantalla.
+   --u es el tamaño de una unidad del lienzo de 375×812: sale del lado más
+   limitante (ancho o alto). La izquierda se pega al borde izquierdo, la derecha
+   al derecho y el fondo cubre todo. 1 --q = 3.75 unidades (antes calc(var(--q) * 1)). */
 
 .poster {
   --night: #14040a;
@@ -13,23 +15,52 @@
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
-  align-items: center;
   justify-content: center;
   background: var(--night);
   color: var(--cream);
 }
 
-/* el cartel entero siempre cabe en la zona visible, sea cual sea el móvil:
-   ancho limitado por el ancho de pantalla, por 480px y por el alto disponible */
-.stage {
+.wrap {
   position: relative;
-  width: min(100%, 480px, calc(100vh * 375 / 812));
-  width: min(100%, 480px, calc(100dvh * 375 / 812));
-  aspect-ratio: 375 / 812;
-  container-type: inline-size;
+  width: min(100vw, calc(100vh * 0.62));
+  width: min(100vw, calc(100dvh * 0.62));
+  height: 100vh;
+  height: 100dvh;
+  container-type: size;
   overflow: hidden;
-  box-shadow: 0 0 80px rgba(255, 40, 60, 0.16);
+  background: radial-gradient(circle at 50% 61%, #3b0a13 0%, var(--night) 72%);
 }
+
+/* marco a pantalla completa */
+.wrap::before,
+.wrap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+.wrap::before {
+  inset: 7px;
+  border: 1.2px solid rgba(242, 224, 196, 0.4);
+}
+.wrap::after {
+  inset: 11px;
+  border: 0.7px solid rgba(242, 224, 196, 0.22);
+}
+
+.box {
+  --u: min(100cqw / 375, 100cqh / 812);
+  --q: calc(var(--u) * 3.75);
+  position: absolute;
+  top: 50%;
+  width: calc(var(--u) * 375);
+  height: calc(var(--u) * 812);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.boxC { left: 50%; transform: translate(-50%, -50%); }
+.boxL { left: 0; }
+.boxR { right: 0; }
 
 .art {
   position: absolute;
@@ -37,6 +68,16 @@
   width: 100%;
   height: 100%;
   display: block;
+  overflow: visible;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
 }
 
 /* ── tipografía ── */
@@ -54,23 +95,23 @@
 .moonNote {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 2.3cqw;
+  font-size: calc(var(--q) * 2.3);
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--cream);
   white-space: nowrap;
   line-height: 1;
 }
-.moonNote { font-size: 2cqw; opacity: 0.7; }
+.moonNote { font-size: calc(var(--q) * 2); opacity: 0.7; }
 
 /* días: enorme, con el "error de registro" de la serigrafía */
 .days {
   font-family: 'Anton', Impact, sans-serif;
-  font-size: 54cqw;
+  font-size: calc(var(--q) * 54);
   line-height: 0.84;
   letter-spacing: -0.01em;
   color: var(--hot);
-  text-shadow: 1.6cqw 1.6cqw 0 var(--wine);
+  text-shadow: calc(var(--q) * 1.6) calc(var(--q) * 1.6) 0 var(--wine);
   transform: rotate(-3deg);
   transform-origin: left top;
   font-variant-numeric: tabular-nums;
@@ -79,7 +120,7 @@
 
 .daysLabel {
   font-family: 'Anton', Impact, sans-serif;
-  font-size: 4.6cqw;
+  font-size: calc(var(--q) * 4.6);
   letter-spacing: 0.9em;
   text-transform: uppercase;
   color: var(--cream);
@@ -93,7 +134,7 @@
   width: 28%;
   display: flex;
   flex-direction: column;
-  gap: 1.4cqw;
+  gap: calc(var(--q) * 1.4);
   transform: rotate(-2deg);
   transform-origin: left top;
 }
@@ -106,40 +147,40 @@
 .unit b {
   font-family: 'Anton', Impact, sans-serif;
   font-weight: 400;
-  font-size: 14.4cqw;
+  font-size: calc(var(--q) * 14.4);
   line-height: 0.92;
   color: var(--cream);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0.7cqw 0.7cqw 0 var(--ox);
+  text-shadow: calc(var(--q) * 0.7) calc(var(--q) * 0.7) 0 var(--ox);
 }
 .unit i {
   font-family: var(--font-body);
   font-style: normal;
   font-weight: 500;
-  font-size: 2.3cqw;
+  font-size: calc(var(--q) * 2.3);
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--hot);
-  margin-top: 0.4cqw;
+  margin-top: calc(var(--q) * 0.4);
 }
 
 /* tic tac tic tac */
 .band {
-  left: -2%;
-  width: 104%;
-  padding: 1.5cqw 0 1.2cqw;
+  left: calc((var(--u) * 375 - 100cqw) / 2 - 2cqw);
+  width: calc(100cqw + 4cqw);
+  padding: calc(var(--q) * 1.5) 0 calc(var(--q) * 1.2);
   display: flex;
   justify-content: center;
-  gap: 3.2cqw;
+  gap: calc(var(--q) * 3.2);
   background: var(--hot);
   font-family: 'Anton', Impact, sans-serif;
-  font-size: 6.6cqw;
+  font-size: calc(var(--q) * 6.6);
   letter-spacing: 0.28em;
   line-height: 1;
   text-transform: uppercase;
   color: var(--ink);
   transform: rotate(-1.6deg);
-  box-shadow: 0 1cqw 0 var(--wine);
+  box-shadow: 0 calc(var(--q) * 1) 0 var(--wine);
   white-space: nowrap;
 }
 .band span {
@@ -152,7 +193,7 @@
 .band span:nth-child(4) { animation-delay: 1.5s; }
 
 @keyframes tictac {
-  0%   { color: var(--cream); transform: translateY(-0.8cqw) rotate(-4deg) scale(1.12); }
+  0%   { color: var(--cream); transform: translateY(calc(var(--q) * -0.8)) rotate(-4deg) scale(1.12); }
   25%  { color: var(--ink); transform: none; }
   100% { color: var(--ink); transform: none; }
 }
@@ -162,12 +203,12 @@
   width: 62%;
   font-family: 'Anton', Impact, sans-serif;
   font-weight: 400;
-  font-size: 7.4cqw;
+  font-size: calc(var(--q) * 7.4);
   line-height: 1.04;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--cream);
-  text-shadow: 0.6cqw 0.6cqw 0 var(--ox);
+  text-shadow: calc(var(--q) * 0.6) calc(var(--q) * 0.6) 0 var(--ox);
 }
 
 .date {
@@ -180,16 +221,16 @@
   font-family: 'Anton', Impact, sans-serif;
 }
 .date small {
-  font-size: 3.8cqw;
+  font-size: calc(var(--q) * 3.8);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   padding-left: 0.3em;
 }
 .date b {
   font-weight: 400;
-  font-size: 12.5cqw;
+  font-size: calc(var(--q) * 12.5);
   line-height: 1;
-  margin: 0.4cqw 0;
+  margin: calc(var(--q) * 0.4) 0;
 }
 
 /* ── animaciones del arte ── */

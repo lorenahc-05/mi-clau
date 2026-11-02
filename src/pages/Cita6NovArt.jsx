@@ -1,7 +1,8 @@
 import styles from './Cita6Nov.module.css'
 
-// Cartel de serigrafía en rojos y negro. Todo vive en un lienzo de 375×812
-// (la misma proporción que el póster HTML que lo envuelve).
+// Cartel de serigrafía en rojos y negro. Cada capa es un lienzo de 375×812 que
+// la página escala igual: la izquierda se pega al borde izquierdo, la derecha al
+// derecho y el centro queda en medio, así el cartel llena cualquier pantalla.
 
 const INK = '#0a0204'
 const NIGHT = '#14040a'
@@ -20,7 +21,7 @@ const WEDGES = []
 for (let i = 0; i < 24; i += 2) {
   const a1 = (i * 15 * Math.PI) / 180
   const a2 = ((i + 1) * 15 * Math.PI) / 180
-  const R = 900
+  const R = 2400
   WEDGES.push(
     `M${CX} ${CY} L${(CX + R * Math.cos(a1)).toFixed(1)} ${(CY + R * Math.sin(a1)).toFixed(1)} L${(CX + R * Math.cos(a2)).toFixed(1)} ${(CY + R * Math.sin(a2)).toFixed(1)} Z`,
   )
@@ -52,30 +53,21 @@ function moonPath(cx, cy, r, phase) {
   return `M${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx} ${cy + r} A${rx} ${r} 0 0 ${sw} ${cx} ${cy - r} Z`
 }
 
-export function PosterArt() {
+
+const VB = '0 0 375 812'
+
+// ── centro: rayos, disco-rejilla y chispa ─────────────────────────────────────
+export function CenterArt() {
   return (
-    <svg className={styles.art} viewBox="0 0 375 812" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <svg className={styles.art} viewBox={VB} aria-hidden>
       <defs>
-        <radialGradient id="pa-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stopColor="#3b0a13" />
-          <stop offset="1" stopColor={NIGHT} />
-        </radialGradient>
         <clipPath id="pa-disc">
           <circle cx={CX} cy={CY} r="150" />
         </clipPath>
-        <filter id="pa-grain" x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
       </defs>
-
-      {/* fondo + rayos */}
-      <rect width="375" height="812" fill="url(#pa-glow)" />
       {WEDGES.map((d, i) => (
         <path key={i} d={d} fill="#1d060c" />
       ))}
-
-      {/* disco-rejilla */}
       <g className={styles.discSpin}>
         <circle cx={CX} cy={CY} r="150" fill={OX} />
         <g clipPath="url(#pa-disc)" stroke={NIGHT} strokeWidth="2.6" fill="none">
@@ -86,7 +78,15 @@ export function PosterArt() {
       </g>
       <circle cx={CX} cy={CY} r="150" fill="none" stroke={RED} strokeWidth="5" />
       <circle cx={CX} cy={CY} r="163" fill="none" stroke={WINE} strokeWidth="2" strokeDasharray="2 7" strokeLinecap="round" />
+      <path d="M240 340 Q243 350 253 352 Q243 354 240 364 Q237 354 227 352 Q237 350 240 340 Z" fill={HOT} className={styles.twinkle} />
+    </svg>
+  )
+}
 
+// ── izquierda: pin-up, lunas, vestido y teclas (se extienden hacia la derecha) ──
+export function LeftArt() {
+  return (
+    <svg className={styles.art} viewBox={VB} aria-hidden>
       <g transform="translate(0 24)">
         {/* ── pin-up ── */}
         {/* melena */}
@@ -174,6 +174,45 @@ export function PosterArt() {
           <path d="M0 0 m-3 0 a3 3 0 1 1 3 3 a6 6 0 1 1 -6 -6 a9 9 0 1 1 9 9 a12 12 0 1 1 -12 -12" fill="none" stroke={SKIN} strokeWidth="2.2" strokeLinecap="round" />
         </g>
 
+      </g>
+
+      <g>
+        {[0, 1, 2, 3, 4].map((p) => (
+          <g key={p}>
+            <circle cx={38 + p * 25} cy="318" r="8.5" fill="none" stroke={HOT} strokeWidth="1.6" />
+            <path d={moonPath(38 + p * 25, 318, 8.5, p)} fill={HOT} />
+          </g>
+        ))}
+        <polygon points={star8(26, 372, 11, 5.2)} fill="none" stroke={HOT} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle} />
+        <path d="M62 700 Q64 706 70 708 Q64 710 62 716 Q60 710 54 708 Q60 706 62 700 Z" fill={HOT} className={styles.twinkle2} />
+      </g>
+
+      {/* el vestido sigue hasta el borde derecho en pantallas más anchas */}
+      <path d="M264 730 L1400 730 L1400 812 L264 812 Z" fill={INK} />
+      <path d="M264 730 L1400 730" stroke={HOT} strokeWidth="2.6" />
+
+      {/* teclas de piano / rejilla inferior */}
+      <g>
+        {Array.from({ length: 110 }).map((_, i) => (
+          <rect
+            key={i}
+            x={10 + i * 10.5}
+            y={i % 3 === 0 ? 790 : 796}
+            width="6"
+            height={i % 3 === 0 ? 16 : 10}
+            fill={i % 4 === 0 ? CREAM : i % 2 ? HOT : OX}
+          />
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+// ── derecha: saxofón con ojo, estrella y bloque de la fecha ────────────────────
+export function RightArt() {
+  return (
+    <svg className={styles.art} viewBox={VB} aria-hidden>
+      <g transform="translate(0 24)">
         {/* ── saxofón con ojo ── */}
         <g strokeLinecap="round" strokeLinejoin="round" fill="none">
           <path d="M297 340 Q294 298 330 292" stroke={SKIN} strokeWidth="19" />
@@ -206,44 +245,21 @@ export function PosterArt() {
         </g>
         <path d="M260 648 Q297 624 334 648" fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round" />
       </g>
-
-      {/* misticismo: lunas, estrellas, chispas */}
-      <g>
-        {[0, 1, 2, 3, 4].map((p) => (
-          <g key={p}>
-            <circle cx={38 + p * 25} cy="318" r="8.5" fill="none" stroke={HOT} strokeWidth="1.6" />
-            <path d={moonPath(38 + p * 25, 318, 8.5, p)} fill={HOT} />
-          </g>
-        ))}
-        <polygon points={star8(26, 372, 11, 5.2)} fill="none" stroke={HOT} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle} />
-        <polygon points={star8(350, 372, 9, 4.4)} fill="none" stroke={RED} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle2} />
-        <path d="M240 340 Q243 350 253 352 Q243 354 240 364 Q237 354 227 352 Q237 350 240 340 Z" fill={HOT} className={styles.twinkle} />
-        <path d="M62 700 Q64 706 70 708 Q64 710 62 716 Q60 710 54 708 Q60 706 62 700 Z" fill={HOT} className={styles.twinkle2} />
-      </g>
-
-      {/* bloque de la fecha */}
+      <polygon points={star8(350, 372, 9, 4.4)} fill="none" stroke={RED} strokeWidth="1.8" strokeLinejoin="round" className={styles.twinkle2} />
       <path d="M262 812 L262 744 Q262 720 286 720 L375 720 L375 812 Z" fill={HOT} />
+    </svg>
+  )
+}
 
-      {/* teclas de piano / rejilla inferior */}
-      <g>
-        {Array.from({ length: 24 }).map((_, i) => (
-          <rect
-            key={i}
-            x={10 + i * 10.5}
-            y={i % 3 === 0 ? 790 : 796}
-            width="6"
-            height={i % 3 === 0 ? 16 : 10}
-            fill={i % 4 === 0 ? CREAM : i % 2 ? HOT : OX}
-          />
-        ))}
-      </g>
-
-      {/* marco */}
-      <rect x="7" y="7" width="361" height="798" fill="none" stroke={CREAM} strokeOpacity="0.4" strokeWidth="1.2" />
-      <rect x="11" y="11" width="353" height="790" fill="none" stroke={CREAM} strokeOpacity="0.22" strokeWidth="0.7" />
-
-      {/* grano de impresión */}
-      <rect width="375" height="812" filter="url(#pa-grain)" opacity="0.2" style={{ mixBlendMode: 'overlay' }} />
+// ── grano de impresión a pantalla completa ─────────────────────────────────────
+export function GrainArt() {
+  return (
+    <svg className={styles.grain} width="100%" height="100%" aria-hidden>
+      <filter id="pa-grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#pa-grain)" opacity="0.2" style={{ mixBlendMode: 'overlay' }} />
     </svg>
   )
 }
