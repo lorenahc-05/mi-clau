@@ -10,6 +10,7 @@
   --hot: #ff3b2f;
   --cream: #f2e0c4;
 
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
@@ -18,10 +19,12 @@
   color: var(--cream);
 }
 
+/* el cartel entero siempre cabe en la zona visible, sea cual sea el móvil:
+   ancho limitado por el ancho de pantalla, por 480px y por el alto disponible */
 .stage {
   position: relative;
-  width: 100%;
-  max-width: 480px;
+  width: min(100%, 480px, calc(100vh * 375 / 812));
+  width: min(100%, 480px, calc(100dvh * 375 / 812));
   aspect-ratio: 375 / 812;
   container-type: inline-size;
   overflow: hidden;
@@ -34,13 +37,6 @@
   width: 100%;
   height: 100%;
   display: block;
-}
-
-/* en escritorio el cartel entero cabe en pantalla */
-@media (min-width: 700px) {
-  .stage {
-    width: min(480px, calc(100dvh * 375 / 812));
-  }
 }
 
 /* ── tipografía ── */
